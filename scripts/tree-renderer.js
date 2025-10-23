@@ -149,6 +149,7 @@ class FamilyTree {
         photoCircle.setAttribute('cx', this.nodeWidth / 2);
         photoCircle.setAttribute('cy', 35);
         photoCircle.setAttribute('r', 28);
+        photoCircle.style.pointerEvents = 'none';
         g.appendChild(photoCircle);
 
         // Photo icon (placeholder)
@@ -159,6 +160,7 @@ class FamilyTree {
         photoIcon.setAttribute('text-anchor', 'middle');
         photoIcon.setAttribute('font-size', '24');
         photoIcon.setAttribute('fill', '#95A5A6');
+        photoIcon.style.pointerEvents = 'none';
         photoIcon.textContent = '👤';
         g.appendChild(photoIcon);
 
@@ -167,6 +169,7 @@ class FamilyTree {
         nameText.classList.add('node-name');
         nameText.setAttribute('x', this.nodeWidth / 2);
         nameText.setAttribute('y', 80);
+        nameText.style.pointerEvents = 'none';
 
         // Wrap long names
         const maxChars = 18;
@@ -210,6 +213,7 @@ class FamilyTree {
             locationText.classList.add('node-location');
             locationText.setAttribute('x', this.nodeWidth / 2);
             locationText.setAttribute('y', name.length > maxChars ? 110 : 100);
+            locationText.style.pointerEvents = 'none';
             locationText.textContent = `(${node.location})`;
             g.appendChild(locationText);
         }

@@ -133,11 +133,11 @@ main {
 /* Node Styles */
 .node {
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: filter 0.3s ease;
 }
 
 .node:hover {
-    transform: scale(1.05);
+    filter: brightness(1.05);
 }
 
 .node-rect {
@@ -147,10 +147,18 @@ main {
     filter: drop-shadow(0 4px 6px var(--node-shadow));
     rx: 8;
     ry: 8;
+    transition: stroke-width 0.2s ease, filter 0.2s ease;
 }
 
 .node:hover .node-rect {
+    stroke-width: 3;
     filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+}
+
+/* Prevent text from interfering with hover */
+.node text {
+    pointer-events: none;
+    user-select: none;
 }
 
 .node-gen1 .node-rect {
