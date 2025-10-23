@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Generation Tree</title>
+    <link rel="stylesheet" href="styles/tree-view.css">
+</head>
+<body>
+    <header>
+        <h1>Family Generation Tree</h1>
+        <nav class="controls">
+            <div class="control-group">
+                <button id="zoom-in" class="btn" title="Zoom In">+</button>
+                <button id="zoom-out" class="btn" title="Zoom Out">-</button>
+                <button id="reset-view" class="btn" title="Reset View">Reset</button>
+            </div>
+            <div class="control-group">
+                <input type="text" id="search-input" placeholder="Search family member..." />
+                <button id="search-btn" class="btn">Search</button>
+            </div>
+            <div class="control-group">
+                <label for="generation-filter">Filter by Generation:</label>
+                <select id="generation-filter">
+                    <option value="all">All Generations</option>
+                    <option value="1">Generation 1</option>
+                    <option value="2">Generation 2</option>
+                    <option value="3">Generation 3</option>
+                    <option value="4">Generation 4</option>
+                    <option value="5">Generation 5</option>
+                    <option value="6">Generation 6</option>
+                    <option value="7">Generation 7</option>
+                </select>
+            </div>
+        </nav>
+    </header>
+
+    <main id="tree-container">
+        <svg id="tree-canvas" width="100%" height="100%">
+            <defs>
+                <!-- Arrow markers for different generations -->
+                <marker id="arrow-gen1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#2C3E50" />
+                </marker>
+                <marker id="arrow-gen2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#3498DB" />
+                </marker>
+                <marker id="arrow-gen3" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#1ABC9C" />
+                </marker>
+                <marker id="arrow-gen4" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#F39C12" />
+                </marker>
+                <marker id="arrow-gen5" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#E74C3C" />
+                </marker>
+                <marker id="arrow-gen6" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#9B59B6" />
+                </marker>
+                <marker id="arrow-gen7" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L9,3 z" fill="#16A085" />
+                </marker>
+            </defs>
+            <!-- Tree will be rendered here -->
+            <g id="tree-group" transform="translate(0, 0) scale(1)">
+                <g id="connections-layer"></g>
+                <g id="nodes-layer"></g>
+            </g>
+        </svg>
+    </main>
+
+    <aside id="info-panel" class="hidden">
+        <button id="close-panel" class="close-btn">&times;</button>
+        <div id="info-content">
+            <div class="person-photo">
+                <img id="person-photo" src="" alt="Person photo" />
+            </div>
+            <h2 id="person-name"></h2>
+            <p id="person-location"></p>
+            <p id="person-generation"></p>
+            <div id="person-children"></div>
+        </div>
+    </aside>
+
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Loading family tree...</p>
+    </div>
+
+    <script src="scripts/tree-renderer.js"></script>
+</body>
+</html>

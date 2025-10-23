@@ -1,0 +1,417 @@
+{
+  "id": "root",
+  "name": "Chowdhury Abu Eusuf Muhammad Ali Khan",
+  "generation": 1,
+  "photo": null,
+  "location": null,
+  "children": [
+    {
+      "id": "gen2-1",
+      "name": "Chowdhury Abu Muhammad Himmot Khan",
+      "generation": 2,
+      "photo": null,
+      "location": "Foridpur",
+      "children": [
+        {
+          "id": "gen3-1",
+          "name": "Chowdhury Abu Abdullah Khan",
+          "generation": 3,
+          "photo": null,
+          "location": "Foridpur",
+          "children": [
+            {
+              "id": "gen4-1",
+              "name": "Chowdhury (Branch 1)",
+              "generation": 4,
+              "photo": null,
+              "location": "Borishal Chormuddi",
+              "children": [
+                {
+                  "id": "gen5-1",
+                  "name": "Muhammad Golap Khan α",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-1",
+                      "name": "Descendant 1",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-1",
+                          "name": "Descendant 1-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-2",
+                          "name": "Descendant 1-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-2",
+                      "name": "Descendant 2",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-3",
+                          "name": "Descendant 2-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-4",
+                          "name": "Descendant 2-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "gen5-2",
+                  "name": "Muhammad Kazol Khan β",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-3",
+                      "name": "Descendant 3",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-5",
+                          "name": "Descendant 3-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-6",
+                          "name": "Descendant 3-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-4",
+                      "name": "Descendant 4",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-7",
+                          "name": "Descendant 4-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-8",
+                          "name": "Descendant 4-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "gen4-2",
+              "name": "Hazi Huzzat Ali Khan",
+              "generation": 4,
+              "photo": null,
+              "location": "Amtoli",
+              "children": [
+                {
+                  "id": "gen5-3",
+                  "name": "Muhammad Azol Khan ¥",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-5",
+                      "name": "Descendant 5",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-9",
+                          "name": "Descendant 5-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-10",
+                          "name": "Descendant 5-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-6",
+                      "name": "Descendant 6",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-11",
+                          "name": "Descendant 6-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-12",
+                          "name": "Descendant 6-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "gen5-4",
+                  "name": "Muhammad Korim Khan ∆",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-7",
+                      "name": "Descendant 7",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-13",
+                          "name": "Descendant 7-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-14",
+                          "name": "Descendant 7-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-8",
+                      "name": "Descendant 8",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-15",
+                          "name": "Descendant 8-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-16",
+                          "name": "Descendant 8-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "gen3-2",
+          "name": "Another Branch",
+          "generation": 3,
+          "photo": null,
+          "location": null,
+          "children": [
+            {
+              "id": "gen4-3",
+              "name": "Muhammad Eman Khan",
+              "generation": 4,
+              "photo": null,
+              "location": null,
+              "children": [
+                {
+                  "id": "gen5-5",
+                  "name": "Descendant 9",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-9",
+                      "name": "Descendant 9-1",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-17",
+                          "name": "Descendant 9-1-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-18",
+                          "name": "Descendant 9-1-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-10",
+                      "name": "Descendant 9-2",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-19",
+                          "name": "Descendant 9-2-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-20",
+                          "name": "Descendant 9-2-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "gen5-6",
+                  "name": "Descendant 10",
+                  "generation": 5,
+                  "photo": null,
+                  "location": null,
+                  "children": [
+                    {
+                      "id": "gen6-11",
+                      "name": "Descendant 10-1",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-21",
+                          "name": "Descendant 10-1-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-22",
+                          "name": "Descendant 10-1-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    },
+                    {
+                      "id": "gen6-12",
+                      "name": "Descendant 10-2",
+                      "generation": 6,
+                      "photo": null,
+                      "location": null,
+                      "children": [
+                        {
+                          "id": "gen7-23",
+                          "name": "Descendant 10-2-1",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        },
+                        {
+                          "id": "gen7-24",
+                          "name": "Descendant 10-2-2",
+                          "generation": 7,
+                          "photo": null,
+                          "location": null,
+                          "children": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
