@@ -40,6 +40,12 @@ public class PersonRequest {
 	@Schema(description = "Spouse information", example = "Mrs Fatima Begum")
 	private String spouse;
 
+	@Schema(description = "Canvas X position", example = "500.0")
+	private Double positionX;
+
+	@Schema(description = "Canvas Y position", example = "300.0")
+	private Double positionY;
+
 	@Schema(description = "Parent ID to establish PARENT_OF relationship", example = "gen8-001")
 	private String parentId;
 }

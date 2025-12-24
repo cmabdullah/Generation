@@ -43,6 +43,12 @@ public class PersonResponse {
 	@Schema(description = "Spouse information", example = "Mrs Example")
 	private String spouse;
 
+	@Schema(description = "Canvas X position", example = "500.0")
+	private Double positionX;
+
+	@Schema(description = "Canvas Y position", example = "300.0")
+	private Double positionY;
+
 	@Schema(description = "List of children (recursive structure)")
 	@Builder.Default
 	private List<PersonResponse> childs = new ArrayList<>();

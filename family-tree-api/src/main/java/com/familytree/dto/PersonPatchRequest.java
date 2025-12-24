@@ -32,4 +32,10 @@ public class PersonPatchRequest {
 
 	@Schema(description = "Updated spouse information", example = "Mrs Fatima Begum (Updated)")
 	private String spouse;
+
+	@Schema(description = "Updated canvas X position", example = "650.0")
+	private Double positionX;
+
+	@Schema(description = "Updated canvas Y position", example = "450.0")
+	private Double positionY;
 }

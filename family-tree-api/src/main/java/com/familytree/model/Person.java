@@ -46,6 +46,12 @@ public class Person {
 	@Property("spouse")
 	private String spouse;
 
+	@Property("positionX")
+	private Double positionX;
+
+	@Property("positionY")
+	private Double positionY;
+
 	@Relationship(type = "PARENT_OF", direction = Relationship.Direction.OUTGOING)
 	private Set<Person> children = new HashSet<>();
 
