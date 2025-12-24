@@ -1,0 +1,578 @@
+{
+  "name": "Chowdhury Abu Eusuf Muhammad Ali Khan",
+  "id": "root-001",
+  "avatar": "io.jpeg",
+  "address": "N/A",
+  "level": 1,
+  "signature": "LL",
+  "childs": [
+    {
+      "name": "Chowdhury Abu Muhammad Himmot Khan",
+      "id": "gen2-001",
+      "avatar": "io.jpeg",
+      "address": "Foridpur",
+      "level": 2,
+      "signature": "LLL",
+      "childs": [
+        {
+          "name": "Chowdhury Abu Abdullah Khan",
+          "id": "gen3-001",
+          "avatar": "io.jpeg",
+          "address": "Foridpur",
+          "level": 3,
+          "signature": "LLLM",
+          "childs": [
+            {
+              "name": "Chowdhury Shamsher Ali Khan",
+              "id": "gen4-001",
+              "avatar": "io.jpeg",
+              "address": "Borishal Chormuddi",
+              "level": 4,
+              "signature": "LLLMM",
+              "childs": []
+            },
+            {
+              "name": "Hazi Huzzat Ali Khan",
+              "id": "gen4-002",
+              "avatar": "io.jpeg",
+              "address": "Amtoli",
+              "level": 4,
+              "signature": "LLLMNO",
+              "childs": [
+                {
+                  "name": "Muhammad Golap Khan",
+                  "id": "gen5-001",
+                  "avatar": "io.jpeg",
+                  "address": "Amtoli",
+                  "level": 5,
+                  "signature": "α",
+                  "childs": [
+                    {
+                      "name": "Muhammad Eman Khan",
+                      "id": "gen6-alpha-001",
+                      "avatar": "io.jpeg",
+                      "address": "N/A",
+                      "level": 6,
+                      "signature": "α#",
+                      "childs": [
+                        {
+                          "name": "Nur Muhammad Akon",
+                          "id": "gen7-alpha-001",
+                          "avatar": "io.jpeg",
+                          "address": "Ghotkhali",
+                          "level": 7,
+                          "signature": "α##",
+                          "childs": [
+                            {
+                              "name": "Muhammad Abdul Aziz Akon",
+                              "id": "gen8-alpha-001",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α###",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Hosneara Khanom",
+                              "id": "gen8-alpha-002",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "β###",
+                              "spouse": "Muhammad Habibur Rahman Gazi (BA)",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Meser Merdha",
+                          "id": "gen7-alpha-002",
+                          "avatar": "io.jpeg",
+                          "address": "Gilatoli",
+                          "level": 7,
+                          "signature": "α##",
+                          "childs": [
+                            {
+                              "name": "Rashid Merdha",
+                              "id": "gen8-alpha-003",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α###",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Muhammad",
+                          "id": "gen7-alpha-003",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α**",
+                          "childs": [
+                            {
+                              "name": "Muhammad Wahab Khan",
+                              "id": "gen8-alpha-004",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "spouse": "Mrs Ap Begum",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Wahid Khan",
+                              "id": "gen8-alpha-005",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "spouse": "Mrs Majeda Khatun (Death 2013)",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Jahangir Khan",
+                              "id": "gen8-alpha-006",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "spouse": "Mrs Shanaj Parvin",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Ahmmad",
+                          "id": "gen7-alpha-004",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α**",
+                          "childs": []
+                        },
+                        {
+                          "name": "Abdur Razzaq Khan",
+                          "id": "gen7-alpha-005",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Abdul Halim Khan",
+                              "id": "gen8-alpha-007",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Mamun Khan",
+                              "id": "gen8-alpha-008",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Sohag Khan",
+                              "id": "gen8-alpha-009",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Masum Khan",
+                              "id": "gen8-alpha-010",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Rina Khatun",
+                              "id": "gen8-alpha-011",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Runa Khatun",
+                              "id": "gen8-alpha-012",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Nasrin Khatun",
+                              "id": "gen8-alpha-013",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Abdul Kadir Khan",
+                          "id": "gen7-alpha-006",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Feroz Khan",
+                              "id": "gen8-alpha-014",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Afroja Khatun",
+                              "id": "gen8-alpha-015",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Kajol Khatun",
+                              "id": "gen8-alpha-016",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Kumkum Khatun",
+                              "id": "gen8-alpha-017",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Silpi Khatun",
+                              "id": "gen8-alpha-018",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Mrs Habibun-nesa",
+                          "id": "gen7-alpha-007",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Sattar Hawlader",
+                              "id": "gen8-alpha-019",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Kohinur Begum",
+                              "id": "gen8-alpha-020",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Jahanur Begum",
+                              "id": "gen8-alpha-021",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Abi Abdullah Khan (Altaf)",
+                          "id": "gen7-alpha-008",
+                          "avatar": "io.jpeg",
+                          "address": "Sikandar Khali",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Msarrof",
+                              "id": "gen8-alpha-022",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Feroza Begum",
+                              "id": "gen8-alpha-023",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Hafiza Begum",
+                              "id": "gen8-alpha-024",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Jamal Hawlader",
+                              "id": "gen8-alpha-025",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Kamal Hawlader",
+                              "id": "gen8-alpha-026",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Jafor Hawlader",
+                              "id": "gen8-alpha-027",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Majida Begum",
+                              "id": "gen8-alpha-028",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Rashida Begum",
+                              "id": "gen8-alpha-029",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Sahida Begum",
+                              "id": "gen8-alpha-030",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Maleka",
+                          "id": "gen7-alpha-009",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Amin",
+                              "id": "gen8-alpha-031",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Jakiya Begum",
+                              "id": "gen8-alpha-032",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Parul Begum",
+                              "id": "gen8-alpha-033",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Khayrun-nesa",
+                          "id": "gen7-alpha-010",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": [
+                            {
+                              "name": "Muhammad Toyub Gazi",
+                              "id": "gen8-alpha-034",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Saydur Rahman Gazi",
+                              "id": "gen8-alpha-035",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Sahjahan Gazi",
+                              "id": "gen8-alpha-036",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Muhammad Tofayal Gazi",
+                              "id": "gen8-alpha-037",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            },
+                            {
+                              "name": "Mrs Nazma Begum",
+                              "id": "gen8-alpha-038",
+                              "avatar": "io.jpeg",
+                              "address": "N/A",
+                              "level": 8,
+                              "signature": "α+++",
+                              "childs": []
+                            }
+                          ]
+                        },
+                        {
+                          "name": "Thomina",
+                          "id": "gen7-alpha-011",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": []
+                        },
+                        {
+                          "name": "Ambia / Mrs Rokeya",
+                          "id": "gen7-alpha-012",
+                          "avatar": "io.jpeg",
+                          "address": "N/A",
+                          "level": 7,
+                          "signature": "α++",
+                          "childs": []
+                        }
+                      ]
+                    },
+                    {
+                      "name": "Mrs Meher Zan",
+                      "id": "gen6-alpha-002",
+                      "avatar": "io.jpeg",
+                      "address": "N/A",
+                      "level": 6,
+                      "signature": "α#",
+                      "spouse": "Nobab Ali Hawladar (Ghotkhali)",
+                      "childs": []
+                    },
+                    {
+                      "name": "Abdul Hamid Khan",
+                      "id": "gen6-alpha-003",
+                      "avatar": "io.jpeg",
+                      "address": "N/A",
+                      "level": 6,
+                      "signature": "α#",
+                      "childs": []
+                    }
+                  ]
+                },
+                {
+                  "name": "Muhammad Kazol Khan",
+                  "id": "gen5-002",
+                  "avatar": "io.jpeg",
+                  "address": "Amtoli",
+                  "level": 5,
+                  "signature": "β",
+                  "childs": []
+                },
+                {
+                  "name": "Muhammad Azol Khan",
+                  "id": "gen5-003",
+                  "avatar": "io.jpeg",
+                  "address": "Amtoli",
+                  "level": 5,
+                  "signature": "¥",
+                  "childs": []
+                },
+                {
+                  "name": "Muhammad Korim Khan",
+                  "id": "gen5-004",
+                  "avatar": "io.jpeg",
+                  "address": "Amtoli",
+                  "level": 5,
+                  "signature": "∆",
+                  "childs": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

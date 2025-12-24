@@ -1,0 +1,16 @@
+spring:
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: password
+
+logging:
+  level:
+    root: DEBUG
+    org.springframework.data.neo4j: DEBUG
+    com.familytree: DEBUG
+
+app:
+  data:
+    initial-load: true
