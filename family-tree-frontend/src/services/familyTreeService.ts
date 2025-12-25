@@ -1,6 +1,6 @@
 import api from './api';
 import { API_ENDPOINTS } from '../constants/apiEndpoints';
-import {
+import type {
   Person,
   PersonRequest,
   PersonPatchRequest,

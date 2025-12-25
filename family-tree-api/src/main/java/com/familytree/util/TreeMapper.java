@@ -30,6 +30,8 @@ public class TreeMapper {
 				.level(person.getLevel())
 				.signature(person.getSignature())
 				.spouse(person.getSpouse())
+				.positionX(person.getPositionX())
+				.positionY(person.getPositionY())
 				.childs(new ArrayList<>())
 				.build();
 	}

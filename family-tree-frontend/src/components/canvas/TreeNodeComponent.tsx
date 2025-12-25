@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
-import { TreeNode } from '../../models/TreeNode';
+import type { TreeNode } from '../../models/TreeNode';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
 import { getColorForLevel, UI_COLORS } from '../../constants/colors';
 import { useUIStore } from '../../stores/uiStore';

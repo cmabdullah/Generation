@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { KonvaEventObject } from 'konva/lib/Node';
+import type { KonvaEventObject } from 'konva/lib/Node';
 import { useTreeStore } from '../stores/treeStore';
 import { debounce } from '../utils/debounce';
 

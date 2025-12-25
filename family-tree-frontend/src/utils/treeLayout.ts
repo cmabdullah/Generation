@@ -1,5 +1,5 @@
-import { Person } from '../models/Person';
-import { TreeNode } from '../models/TreeNode';
+import type { Person } from '../models/Person';
+import type { TreeNode } from '../models/TreeNode';
 import { LAYOUT_CONSTANTS, NODE_DIMENSIONS } from '../constants/dimensions';
 
 /**

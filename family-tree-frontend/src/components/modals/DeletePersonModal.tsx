@@ -10,7 +10,7 @@ import {
 import { toast } from 'react-toastify';
 import { familyTreeService } from '../../services/familyTreeService';
 import { useTreeStore } from '../../stores/treeStore';
-import { Person } from '../../models/Person';
+import type { Person } from '../../models/Person';
 
 interface DeletePersonModalProps {
   isOpen: boolean;

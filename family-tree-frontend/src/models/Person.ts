@@ -1,7 +1,6 @@
 /**
  * Person model matching backend Person entity
  */
-
 export interface Person {
   id: string;
   name: string;
@@ -15,19 +14,25 @@ export interface Person {
   childs: Person[];
 }
 
+/**
+ * Person request for creating new person
+ */
 export interface PersonRequest {
   id: string;
   name: string;
   avatar?: string;
-  address?: string;
+  address: string;
   level: number;
-  signature?: string;
+  signature: string;
   spouse?: string;
   positionX?: number;
   positionY?: number;
   parentId?: string;
 }
 
+/**
+ * Person patch request for updating person
+ */
 export interface PersonPatchRequest {
   name?: string;
   avatar?: string;
@@ -39,6 +44,9 @@ export interface PersonPatchRequest {
   positionY?: number;
 }
 
+/**
+ * API response wrapper
+ */
 export interface ApiResponse<T> {
   success: boolean;
   message: string;

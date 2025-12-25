@@ -95,6 +95,14 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 				request.getSpouse()
 		);
 
+		// Set position if provided
+		if (request.getPositionX() != null) {
+			person.setPositionX(request.getPositionX());
+		}
+		if (request.getPositionY() != null) {
+			person.setPositionY(request.getPositionY());
+		}
+
 		// Save person
 		Person savedPerson = personRepository.save(person);
 		log.info("Person created: {}", savedPerson.getId());
@@ -146,6 +154,16 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 		if (request.getSpouse() != null) {
 			person.setSpouse(request.getSpouse());
+			updated = true;
+		}
+
+		if (request.getPositionX() != null) {
+			person.setPositionX(request.getPositionX());
+			updated = true;
+		}
+
+		if (request.getPositionY() != null) {
+			person.setPositionY(request.getPositionY());
 			updated = true;
 		}
 

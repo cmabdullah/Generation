@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ViewMode } from '../models/TreeNode';
+import type { ViewMode } from '../models/TreeNode';
 import { LAYOUT_CONSTANTS, CANVAS_CONSTANTS } from '../constants/dimensions';
 
 interface UIState {
@@ -19,6 +19,7 @@ interface UIState {
   zoomOut: () => void;
   resetView: () => void;
   toggleInfoPanel: () => void;
+  setShowInfoPanel: (show: boolean) => void;
   setSearchQuery: (query: string) => void;
   setSelectedLevel: (level: number | null) => void;
 }
@@ -69,6 +70,8 @@ export const useUIStore = create<UIState>((set) => ({
 
   toggleInfoPanel: () =>
     set((state) => ({ showInfoPanel: !state.showInfoPanel })),
+
+  setShowInfoPanel: (show) => set({ showInfoPanel: show }),
 
   setSearchQuery: (query) => set({ searchQuery: query }),
 

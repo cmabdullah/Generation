@@ -1,4 +1,4 @@
-import { Person } from './Person';
+import type { Person } from './Person';
 
 /**
  * TreeNode extends Person with calculated canvas position and dimensions

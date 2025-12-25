@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { Person } from '../models/Person';
-import { TreeNode } from '../models/TreeNode';
+import type { Person } from '../models/Person';
+import type { TreeNode } from '../models/TreeNode';
 import { familyTreeService } from '../services/familyTreeService';
 import { calculateTreeLayout, flattenTree } from '../utils/treeLayout';
 import { toast } from 'react-toastify';

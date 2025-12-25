@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Person } from '../../models/Person';
+import type { Person } from '../../models/Person';
 import './ContextMenu.css';
 
 interface ContextMenuProps {

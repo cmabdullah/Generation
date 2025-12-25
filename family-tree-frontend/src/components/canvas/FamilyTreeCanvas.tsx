@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { TreeNodeComponent } from './TreeNodeComponent';
@@ -10,8 +10,8 @@ import { DeletePersonModal } from '../modals/DeletePersonModal';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
-import { Connection, TreeNode } from '../../models/TreeNode';
-import { Person } from '../../models/Person';
+import type { Connection, TreeNode } from '../../models/TreeNode';
+import type { Person } from '../../models/Person';
 
 /**
  * Main canvas component using Konva for rendering the family tree
@@ -21,7 +21,6 @@ export const FamilyTreeCanvas: React.FC = () => {
 
   const allNodes = useTreeStore((state) => state.allNodes);
   const setSelectedNode = useTreeStore((state) => state.setSelectedNode);
-  const showInfoPanel = useUIStore((state) => state.showInfoPanel);
   const setShowInfoPanel = useUIStore((state) => state.setShowInfoPanel);
   const zoom = useUIStore((state) => state.zoom);
   const panX = useUIStore((state) => state.panX);

@@ -38,7 +38,7 @@ export const TreeNavbar: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ width: '200px' }}
-            size="sm"
+            bsSize="sm"
           />
         </div>
 
