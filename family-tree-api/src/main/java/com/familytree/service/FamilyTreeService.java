@@ -60,4 +60,10 @@ public interface FamilyTreeService {
 	 * Reload data from JSON file (admin operation)
 	 */
 	void reloadData();
+
+	/**
+	 * Reset all position values (positionX and positionY) to null
+	 * This forces automatic layout recalculation on the frontend
+	 */
+	void resetAllPositions();
 }

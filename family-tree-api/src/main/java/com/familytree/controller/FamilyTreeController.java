@@ -250,4 +250,21 @@ public class FamilyTreeController {
 		familyTreeService.reloadData();
 		return ResponseEntity.ok(ApiResponse.success("Data reloaded successfully", null));
 	}
+
+	@PatchMapping("/reset-positions")
+	@Operation(
+			summary = "Reset all node positions",
+			description = "Resets all positionX and positionY values to null, forcing automatic layout recalculation"
+	)
+	@ApiResponses(value = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "200",
+					description = "All positions reset successfully"
+			)
+	})
+	public ResponseEntity<ApiResponse<Void>> resetAllPositions() {
+		log.info("PATCH /api/family-tree/reset-positions - Reset all positions");
+		familyTreeService.resetAllPositions();
+		return ResponseEntity.ok(ApiResponse.success("All positions reset successfully", null));
+	}
 }

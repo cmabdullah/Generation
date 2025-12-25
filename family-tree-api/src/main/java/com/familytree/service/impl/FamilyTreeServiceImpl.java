@@ -235,4 +235,21 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 		log.info("Data reloaded successfully");
 	}
+
+	@Override
+	public void resetAllPositions() {
+		log.info("Resetting all node positions to null");
+
+		// Get all persons and reset their positions
+		List<Person> allPersons = personRepository.findAll();
+
+		for (Person person : allPersons) {
+			person.setPositionX(null);
+			person.setPositionY(null);
+		}
+
+		personRepository.saveAll(allPersons);
+
+		log.info("Successfully reset positions for {} persons", allPersons.size());
+	}
 }
