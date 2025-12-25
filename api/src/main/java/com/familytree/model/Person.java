@@ -43,6 +43,9 @@ public class Person {
 	@Property("signature")
 	private String signature;
 
+	@Property("signatureId")
+	private String signatureId;
+
 	@Property("spouse")
 	private String spouse;
 
