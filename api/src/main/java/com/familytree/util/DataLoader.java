@@ -86,6 +86,7 @@ public class DataLoader implements CommandLineRunner {
 		flattenTree(rootNode, null, allNodes, childToParentMap);
 
 		log.info("Flattened tree contains {} nodes", allNodes.size());
+		log.info("Total parent-child relationships to create: {}", childToParentMap.size());
 
 		// First pass: Create all Person nodes
 		List<Person> persons = new ArrayList<>();
@@ -100,16 +101,51 @@ public class DataLoader implements CommandLineRunner {
 
 		// Second pass: Create PARENT_OF relationships
 		int relationshipCount = 0;
+		int failedRelationships = 0;
 		for (Map.Entry<String, String> entry : childToParentMap.entrySet()) {
 			String childId = entry.getKey();
 			String parentId = entry.getValue();
-			personRepository.createParentChildRelationship(parentId, childId);
-			relationshipCount++;
+			try {
+				personRepository.createParentChildRelationship(parentId, childId);
+				relationshipCount++;
+				if (relationshipCount <= 5) {
+					log.debug("Created relationship: {} -> {}", parentId, childId);
+				}
+			} catch (Exception e) {
+				failedRelationships++;
+				log.error("Failed to create relationship: {} -> {}. Error: {}", parentId, childId, e.getMessage());
+			}
 		}
 
 		log.info("Created {} PARENT_OF relationships", relationshipCount);
+		if (failedRelationships > 0) {
+			log.warn("Failed to create {} relationships", failedRelationships);
+		}
+
+		// Verify root node has children
+		verifyRootNodeChildren(rootNode.getId());
 
 		return allNodes.size();
+	}
+
+	/**
+	 * Verify that the root node has children in the database
+	 */
+	private void verifyRootNodeChildren(String rootId) {
+		try {
+			List<Person> children = personRepository.findChildren(rootId);
+			log.info("Verification: Root node '{}' has {} children in database", rootId, children.size());
+			if (children.isEmpty()) {
+				log.error("CRITICAL: Root node has NO children after migration!");
+			} else {
+				for (int i = 0; i < Math.min(3, children.size()); i++) {
+					Person child = children.get(i);
+					log.info("  Child {}: {} (ID: {}, Level: {})", i + 1, child.getName(), child.getId(), child.getLevel());
+				}
+			}
+		} catch (Exception e) {
+			log.error("Failed to verify root node children: {}", e.getMessage());
+		}
 	}
 
 	/**
