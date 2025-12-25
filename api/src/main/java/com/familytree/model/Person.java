@@ -37,6 +37,12 @@ public class Person {
 	@Property("address")
 	private String address;
 
+	@Property("contributorId")
+	private String contributorId;
+
+	@Property("isPositionLocked")
+	private Boolean isPositionLocked = false;
+
 	@Property("level")
 	private Integer level;
 
