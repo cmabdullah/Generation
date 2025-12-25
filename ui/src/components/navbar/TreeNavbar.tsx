@@ -61,7 +61,7 @@ export const TreeNavbar: React.FC = () => {
       <div className="d-flex w-100 align-items-center justify-content-between">
         {/* Left section */}
         <div className="d-flex align-items-center gap-3">
-          <h5 className="mb-0">🌳 Family Tree</h5>
+          <h5 className="mb-0 text-white">কে?</h5>
 
           <Input
             type="search"
