@@ -4,6 +4,7 @@ import type { TreeNode } from '../models/TreeNode';
 import { familyTreeService } from '../services/familyTreeService';
 import { calculateTreeLayout, flattenTree } from '../utils/treeLayout';
 import { toast } from 'react-toastify';
+import { usePositionCacheStore } from './positionCacheStore';
 
 /**
  * Helper function to update a person's data deep in the tree structure
@@ -38,6 +39,7 @@ interface TreeState {
   persistNodePosition: (id: string, x: number, y: number) => Promise<void>;
   setSelectedNode: (id: string | null) => void;
   refreshTree: () => Promise<void>;
+  recalculateLayout: () => void;
 }
 
 export const useTreeStore = create<TreeState>((set, get) => ({
@@ -53,7 +55,19 @@ export const useTreeStore = create<TreeState>((set, get) => ({
     try {
       const response = await familyTreeService.getFullTree();
       const root = response.data;
-      const nodes = calculateTreeLayout(root);
+
+      // Get cache functions
+      const getCachedPosition = usePositionCacheStore.getState().getCachedPosition;
+      const setCachedPosition = usePositionCacheStore.getState().setCachedPosition;
+
+      // Calculate layout with cache support
+      const nodes = calculateTreeLayout(root, {
+        useCache: true,
+        saveCache: true,
+        getCachedPosition,
+        setCachedPosition,
+      });
+
       const persons = flattenTree(root);
 
       set({
@@ -75,6 +89,9 @@ export const useTreeStore = create<TreeState>((set, get) => ({
         node.id === id ? { ...node, x, y, positionX: x, positionY: y } : node
       ),
     }));
+
+    // Update position cache immediately
+    usePositionCacheStore.getState().setCachedPosition(id, x, y, 'manual');
   },
 
   persistNodePosition: async (id: string, x: number, y: number) => {
@@ -97,12 +114,14 @@ export const useTreeStore = create<TreeState>((set, get) => ({
         }));
       }
 
+      // Cache is already updated by updateNodePosition()
       // DO NOT call loadTree() - it would recalculate the entire layout
     } catch (error) {
       console.error('Failed to persist position:', error);
       toast.error('Failed to save position');
 
-      // Rollback optimistic update on error
+      // Rollback: remove from cache and reload
+      usePositionCacheStore.getState().invalidateCache([id]);
       if (get().rootPerson) {
         await get().loadTree();
       }
@@ -115,5 +134,27 @@ export const useTreeStore = create<TreeState>((set, get) => ({
 
   refreshTree: async () => {
     await get().loadTree();
+  },
+
+  recalculateLayout: () => {
+    const { rootPerson } = get();
+    if (!rootPerson) return;
+
+    // Clear cache to force recalculation
+    usePositionCacheStore.getState().clearCache();
+
+    // Recalculate without cache
+    const getCachedPosition = usePositionCacheStore.getState().getCachedPosition;
+    const setCachedPosition = usePositionCacheStore.getState().setCachedPosition;
+
+    const nodes = calculateTreeLayout(rootPerson, {
+      useCache: true,
+      saveCache: true,
+      getCachedPosition,
+      setCachedPosition,
+    });
+
+    set({ allNodes: nodes });
+    toast.success('Layout recalculated');
   },
 }));

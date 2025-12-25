@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
 import { Navbar, Nav, Button, Input } from 'reactstrap';
 import { ZoomControls } from './ZoomControls';
 import { useUIStore } from '../../stores/uiStore';
 import { useTreeStore } from '../../stores/treeStore';
+import { usePositionCacheStore } from '../../stores/positionCacheStore';
 
 /**
  * Top navigation bar with controls and search
@@ -14,10 +16,39 @@ export const TreeNavbar: React.FC = () => {
   const toggleInfoPanel = useUIStore((state) => state.toggleInfoPanel);
   const showInfoPanel = useUIStore((state) => state.showInfoPanel);
   const refreshTree = useTreeStore((state) => state.refreshTree);
+  const recalculateLayout = useTreeStore((state) => state.recalculateLayout);
+  const cacheVersion = usePositionCacheStore((state) => state.version);
 
   const handleModeToggle = () => {
     setMode(mode === 'view' ? 'edit' : 'view');
   };
+
+  const handleResetLayout = () => {
+    // Get fresh stats at click time
+    const cache = usePositionCacheStore.getState().cache;
+    const positions = Array.from(cache.values());
+    const manualCount = positions.filter(p => p.source === 'manual').length;
+
+    const confirmed = window.confirm(
+      `This will reset all node positions to auto-calculated layout.\n\n` +
+      `${manualCount} manually positioned nodes will be reset.\n\n` +
+      `Continue?`
+    );
+
+    if (confirmed) {
+      recalculateLayout();
+    }
+  };
+
+  // Compute stats for tooltip (memoized, only recomputes when cache version changes)
+  const { totalCount, manualCount } = useMemo(() => {
+    const cache = usePositionCacheStore.getState().cache;
+    const positions = Array.from(cache.values());
+    return {
+      totalCount: positions.length,
+      manualCount: positions.filter(p => p.source === 'manual').length,
+    };
+  }, [cacheVersion]);
 
   return (
     <Navbar
@@ -72,6 +103,16 @@ export const TreeNavbar: React.FC = () => {
             onClick={refreshTree}
           >
             🔄 Refresh
+          </Button>
+
+          <Button
+            color="danger"
+            size="sm"
+            onClick={handleResetLayout}
+            title={`Reset layout (${totalCount} positions cached, ${manualCount} manual)`}
+            outline
+          >
+            ↺ Reset Layout
           </Button>
         </Nav>
       </div>

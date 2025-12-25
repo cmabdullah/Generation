@@ -15,6 +15,8 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { familyTreeService } from '../../services/familyTreeService';
 import { useTreeStore } from '../../stores/treeStore';
+import { usePositionCacheStore } from '../../stores/positionCacheStore';
+import { CacheInvalidationStrategy } from '../../utils/cacheInvalidation';
 
 interface AddPersonModalProps {
   isOpen: boolean;
@@ -41,6 +43,7 @@ export const AddPersonModal: React.FC<AddPersonModalProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const loadTree = useTreeStore((state) => state.loadTree);
+  const rootPerson = useTreeStore((state) => state.rootPerson);
 
   const {
     register,
@@ -65,6 +68,16 @@ export const AddPersonModal: React.FC<AddPersonModalProps> = ({
       });
 
       toast.success(`Person "${data.name}" created successfully!`);
+
+      // Invalidate affected cache entries
+      if (rootPerson && data.parentId) {
+        const toInvalidate = CacheInvalidationStrategy.onNodeAdded(
+          data.id,
+          data.parentId,
+          rootPerson
+        );
+        usePositionCacheStore.getState().invalidateCache(toInvalidate);
+      }
 
       // Reload the tree to show the new person
       await loadTree();

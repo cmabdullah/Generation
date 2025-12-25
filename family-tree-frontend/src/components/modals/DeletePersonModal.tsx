@@ -10,6 +10,9 @@ import {
 import { toast } from 'react-toastify';
 import { familyTreeService } from '../../services/familyTreeService';
 import { useTreeStore } from '../../stores/treeStore';
+import { usePositionCacheStore } from '../../stores/positionCacheStore';
+import { CacheInvalidationStrategy } from '../../utils/cacheInvalidation';
+import { findParent } from '../../utils/treeLayout';
 import type { Person } from '../../models/Person';
 
 interface DeletePersonModalProps {
@@ -26,6 +29,7 @@ export const DeletePersonModal: React.FC<DeletePersonModalProps> = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const loadTree = useTreeStore((state) => state.loadTree);
+  const rootPerson = useTreeStore((state) => state.rootPerson);
 
   const handleDelete = async () => {
     if (!person) return;
@@ -34,9 +38,28 @@ export const DeletePersonModal: React.FC<DeletePersonModalProps> = ({
     setError(null);
 
     try {
+      // Find parent before deleting
+      const parent = rootPerson ? findParent(rootPerson, person.id) : null;
+
       await familyTreeService.deletePerson(person.id);
 
       toast.success(`Person "${person.name}" deleted successfully!`);
+
+      // Invalidate affected cache entries
+      if (rootPerson) {
+        const toInvalidate = CacheInvalidationStrategy.onNodeDeleted(
+          person.id,
+          parent?.id || null,
+          rootPerson
+        );
+
+        if (toInvalidate.length === 0) {
+          // Deleting root - clear entire cache
+          usePositionCacheStore.getState().clearCache();
+        } else {
+          usePositionCacheStore.getState().invalidateCache(toInvalidate);
+        }
+      }
 
       // Reload the tree to reflect deletion
       await loadTree();
