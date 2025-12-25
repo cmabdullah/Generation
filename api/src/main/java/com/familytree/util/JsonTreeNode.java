@@ -19,6 +19,9 @@ public class JsonTreeNode {
 	private Integer level;
 	private String signature;
 	private String spouse;
+	private String contributorId;
+	private Boolean isPositionLocked;
+	private String signatureId;
 
 	@JsonProperty("childs")
 	private List<JsonTreeNode> childs = new ArrayList<>();

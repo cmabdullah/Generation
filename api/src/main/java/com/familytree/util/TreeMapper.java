@@ -29,7 +29,10 @@ public class TreeMapper {
 				.address(person.getAddress())
 				.level(person.getLevel())
 				.signature(person.getSignature())
+				.signatureId(person.getSignatureId())
 				.spouse(person.getSpouse())
+				.contributorId(person.getContributorId())
+				.isPositionLocked(person.getIsPositionLocked())
 				.positionX(person.getPositionX())
 				.positionY(person.getPositionY())
 				.childs(new ArrayList<>())
@@ -71,7 +74,10 @@ public class TreeMapper {
 		person.setAddress(node.getAddress());
 		person.setLevel(node.getLevel());
 		person.setSignature(node.getSignature());
+		person.setSignatureId(node.getSignatureId());
 		person.setSpouse(node.getSpouse());
+		person.setContributorId(node.getContributorId());
+		person.setIsPositionLocked(node.getIsPositionLocked());
 		person.updateTimestamp();
 
 		return person;

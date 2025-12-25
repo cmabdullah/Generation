@@ -40,8 +40,17 @@ public class PersonResponse {
 	@Schema(description = "Family signature/marker", example = "α")
 	private String signature;
 
+	@Schema(description = "Signature ID", example = "i")
+	private String signatureId;
+
 	@Schema(description = "Spouse information", example = "Mrs Example")
 	private String spouse;
+
+	@Schema(description = "Contributor ID", example = "001")
+	private String contributorId;
+
+	@Schema(description = "Whether position is locked", example = "true")
+	private Boolean isPositionLocked;
 
 	@Schema(description = "Canvas X position", example = "500.0")
 	private Double positionX;
