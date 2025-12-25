@@ -1,0 +1,149 @@
+plugins {
+    id 'base'  // Provides clean, assemble, build lifecycle tasks
+}
+
+group = 'com.familytree'
+version = '1.0.0'
+
+// Define key directories
+def nodeModulesDir = file("${projectDir}/node_modules")
+def distDir = file("${projectDir}/dist")
+def srcDir = file("${projectDir}/src")
+def publicDir = file("${projectDir}/public")
+
+// Detect OS for npm command
+def isWindows = System.getProperty('os.name').toLowerCase().contains('windows')
+def userHome = System.getProperty('user.home')
+
+// Try to find npm from NVM first (for proper Node version), fallback to system npm
+def nvmNodePath = file("${userHome}/.nvm/versions/node/v22.21.1/bin/npm")
+def npmCmd
+if (!isWindows && nvmNodePath.exists()) {
+    npmCmd = nvmNodePath.absolutePath
+} else {
+    npmCmd = isWindows ? 'npm.cmd' : 'npm'
+}
+
+// Task 1: Install npm dependencies
+tasks.register('npmInstall', Exec) {
+    description = 'Install npm dependencies'
+    group = 'build'
+
+    workingDir projectDir
+    commandLine npmCmd, 'install'
+
+    // Set PATH to use NVM Node v22
+    if (!isWindows && file("${userHome}/.nvm/versions/node/v22.21.1/bin").exists()) {
+        environment 'PATH', "${userHome}/.nvm/versions/node/v22.21.1/bin:${System.env.PATH}"
+    }
+
+    // Inputs: package files
+    inputs.files('package.json', 'package-lock.json')
+
+    // Outputs: node_modules directory
+    outputs.dir(nodeModulesDir)
+
+    // Only run if package.json changed or node_modules missing
+    outputs.cacheIf { true }
+}
+
+// Task 2: Run TypeScript compiler and Vite build
+tasks.register('npmBuild', Exec) {
+    description = 'Build the React application using Vite'
+    group = 'build'
+
+    workingDir projectDir
+    commandLine npmCmd, 'run', 'build'
+
+    // Must install dependencies first
+    dependsOn npmInstall
+
+    // Set PATH to use NVM Node v22
+    if (!isWindows && file("${userHome}/.nvm/versions/node/v22.21.1/bin").exists()) {
+        environment 'PATH', "${userHome}/.nvm/versions/node/v22.21.1/bin:${System.env.PATH}"
+    }
+
+    // Inputs: all source files and configs
+    inputs.files('package.json', 'package-lock.json')
+    inputs.file('vite.config.ts')
+    inputs.file('tsconfig.json')
+    inputs.file('tsconfig.app.json')
+    inputs.file('tsconfig.node.json')
+    inputs.file('index.html')
+    inputs.dir(srcDir)
+    inputs.dir(publicDir)
+
+    // Outputs: dist directory
+    outputs.dir(distDir)
+
+    // Enable incremental builds
+    outputs.cacheIf { true }
+}
+
+// Task 3: Run development server (optional)
+tasks.register('npmDev', Exec) {
+    description = 'Run Vite development server'
+    group = 'development'
+
+    workingDir projectDir
+    commandLine npmCmd, 'run', 'dev'
+
+    dependsOn npmInstall
+
+    // Set PATH to use NVM Node v22
+    if (!isWindows && file("${userHome}/.nvm/versions/node/v22.21.1/bin").exists()) {
+        environment 'PATH', "${userHome}/.nvm/versions/node/v22.21.1/bin:${System.env.PATH}"
+    }
+
+    // Dev server doesn't produce outputs, just runs
+    outputs.upToDateWhen { false }
+}
+
+// Task 4: Run linter
+tasks.register('npmLint', Exec) {
+    description = 'Run ESLint on the codebase'
+    group = 'verification'
+
+    workingDir projectDir
+    commandLine npmCmd, 'run', 'lint'
+
+    dependsOn npmInstall
+
+    // Set PATH to use NVM Node v22
+    if (!isWindows && file("${userHome}/.nvm/versions/node/v22.21.1/bin").exists()) {
+        environment 'PATH', "${userHome}/.nvm/versions/node/v22.21.1/bin:${System.env.PATH}"
+    }
+
+    inputs.dir(srcDir)
+    inputs.file('eslint.config.js')
+
+    // Linting doesn't produce file outputs
+    outputs.upToDateWhen { false }
+}
+
+// Task 5: Clean build artifacts
+tasks.named('clean') {
+    description = 'Clean build outputs'
+
+    delete distDir
+    delete file("${projectDir}/.vite")
+    // Optionally uncomment to also delete node_modules:
+    // delete nodeModulesDir
+}
+
+// Task 6: Integrate with Gradle build lifecycle
+tasks.named('build') {
+    description = 'Build the UI module'
+    dependsOn npmBuild
+}
+
+tasks.named('assemble') {
+    description = 'Assemble UI build artifacts'
+    dependsOn npmBuild
+}
+
+// Task 7: Verification lifecycle hook
+tasks.named('check') {
+    description = 'Run checks on the UI module'
+    dependsOn npmLint
+}

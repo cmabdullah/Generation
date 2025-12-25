@@ -1,0 +1,16 @@
+spring:
+  neo4j:
+    uri: ${NEO4J_URI:bolt://neo4j:7687}
+    authentication:
+      username: ${NEO4J_USERNAME:neo4j}
+      password: ${NEO4J_PASSWORD:password}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.data.neo4j: INFO
+    com.familytree: INFO
+
+app:
+  data:
+    initial-load: ${INITIAL_DATA_LOAD:false}
