@@ -5,6 +5,11 @@ import { LAYOUT_CONSTANTS, NODE_DIMENSIONS } from '../constants/dimensions';
 /**
  * Tree layout algorithm using a simplified Reingold-Tilford approach
  * Calculates positions for all nodes in the tree
+ *
+ * Manual Positioning Strategy:
+ * - Nodes with saved positionX/positionY are "anchored" and won't shift
+ * - Parent nodes don't auto-center over manually positioned children
+ * - This prevents cascading realignment when a single node is moved
  */
 
 export function calculateTreeLayout(root: Person): TreeNode[] {
@@ -14,33 +19,45 @@ export function calculateTreeLayout(root: Person): TreeNode[] {
   function traverse(
     person: Person,
     depth: number,
-    leftBound: number
+    leftBound: number,
+    parentIsManual: boolean = false
   ): { node: TreeNode; width: number } {
-    // Use saved positions if available, otherwise calculate
-    const y = person.positionY !== undefined && person.positionY !== null
-      ? person.positionY
-      : depth * verticalSpacing;
+    // Determine if this node is manually positioned
+    const isManuallyPositioned =
+      (person.positionX !== undefined && person.positionX !== null) ||
+      (person.positionY !== undefined && person.positionY !== null);
 
     // Calculate children positions first
+    // Children inherit manual positioning mode
     const childResults = person.childs.map((child, index) => {
       const childLeftBound = leftBound + (index * horizontalSpacing);
-      return traverse(child, depth + 1, childLeftBound);
+      return traverse(child, depth + 1, childLeftBound, isManuallyPositioned);
     });
 
-    // Calculate this node's X position
     let x: number;
+    let y: number;
 
-    if (person.positionX !== undefined && person.positionX !== null) {
-      // Use saved position
-      x = person.positionX;
-    } else if (childResults.length > 0) {
-      // Center over children
-      const firstChildX = childResults[0].node.x;
-      const lastChildX = childResults[childResults.length - 1].node.x;
-      x = (firstChildX + lastChildX) / 2;
+    if (isManuallyPositioned) {
+      // Use saved positions (no calculation)
+      x = person.positionX ?? leftBound;
+      y = person.positionY ?? depth * verticalSpacing;
+
+    } else if (parentIsManual) {
+      // Parent is manual, so don't auto-calculate
+      // Keep existing position or use offset
+      x = person.positionX ?? leftBound;
+      y = person.positionY ?? depth * verticalSpacing;
+
     } else {
-      // Leaf node - use leftBound
-      x = leftBound;
+      // Auto-layout mode (only if neither node nor parent is manual)
+      if (childResults.length > 0) {
+        const firstChildX = childResults[0].node.x;
+        const lastChildX = childResults[childResults.length - 1].node.x;
+        x = (firstChildX + lastChildX) / 2;
+      } else {
+        x = leftBound;
+      }
+      y = depth * verticalSpacing;
     }
 
     const node: TreeNode = {

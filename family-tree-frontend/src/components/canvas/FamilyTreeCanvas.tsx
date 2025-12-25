@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { TreeNodeComponent } from './TreeNodeComponent';
@@ -44,26 +44,43 @@ export const FamilyTreeCanvas: React.FC = () => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [parentIdForAdd, setParentIdForAdd] = useState<string | undefined>(undefined);
 
+  // Memoize Stage configuration to prevent unnecessary re-renders
+  // Only re-calculate when viewport state changes
+  const stageConfig = useMemo(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    scaleX: zoom,
+    scaleY: zoom,
+    x: panX,
+    y: panY,
+  }), [zoom, panX, panY]);
+
+  // Memoize nodes to prevent unnecessary re-renders
+  const memoizedNodes = useMemo(() => allNodes, [allNodes]);
+
   // Calculate connections between nodes
-  const connections: Connection[] = [];
-  allNodes.forEach((node) => {
-    node.childs.forEach((child) => {
-      const childNode = allNodes.find((n) => n.id === child.id);
-      if (childNode) {
-        connections.push({
-          id: `${node.id}-${child.id}`,
-          from: {
-            x: node.x + NODE_DIMENSIONS.width / 2,
-            y: node.y + NODE_DIMENSIONS.height,
-          },
-          to: {
-            x: childNode.x + NODE_DIMENSIONS.width / 2,
-            y: childNode.y,
-          },
-        });
-      }
+  const connections: Connection[] = useMemo(() => {
+    const conns: Connection[] = [];
+    allNodes.forEach((node) => {
+      node.childs.forEach((child) => {
+        const childNode = allNodes.find((n) => n.id === child.id);
+        if (childNode) {
+          conns.push({
+            id: `${node.id}-${child.id}`,
+            from: {
+              x: node.x + NODE_DIMENSIONS.width / 2,
+              y: node.y + NODE_DIMENSIONS.height,
+            },
+            to: {
+              x: childNode.x + NODE_DIMENSIONS.width / 2,
+              y: childNode.y,
+            },
+          });
+        }
+      });
     });
-  });
+    return conns;
+  }, [allNodes]);
 
   // Handle zoom with mouse wheel
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
@@ -138,12 +155,7 @@ export const FamilyTreeCanvas: React.FC = () => {
     <div style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
       <Stage
         ref={stageRef}
-        width={window.innerWidth}
-        height={window.innerHeight}
-        scaleX={zoom}
-        scaleY={zoom}
-        x={panX}
-        y={panY}
+        {...stageConfig}
         onWheel={handleWheel}
         draggable={mode === 'view'}
         onDragEnd={handleDragEnd}
@@ -161,7 +173,7 @@ export const FamilyTreeCanvas: React.FC = () => {
 
         {/* Nodes layer */}
         <Layer>
-          {allNodes.map((node) => (
+          {memoizedNodes.map((node) => (
             <TreeNodeComponent
               key={node.id}
               node={node}

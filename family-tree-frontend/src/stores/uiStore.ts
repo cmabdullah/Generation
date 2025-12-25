@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import type { ViewMode } from '../models/TreeNode';
 import { LAYOUT_CONSTANTS, CANVAS_CONSTANTS } from '../constants/dimensions';
+import { saveViewport, saveViewportImmediate, loadViewport } from '../utils/viewportStorage';
 
 interface UIState {
   mode: ViewMode;
@@ -24,11 +25,14 @@ interface UIState {
   setSelectedLevel: (level: number | null) => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
+// Load persisted viewport state on initialization
+const initialViewport = loadViewport();
+
+export const useUIStore = create<UIState>((set, get) => ({
   mode: 'view',
-  zoom: LAYOUT_CONSTANTS.defaultZoom,
-  panX: CANVAS_CONSTANTS.defaultPanX,
-  panY: CANVAS_CONSTANTS.defaultPanY,
+  zoom: initialViewport.zoom,
+  panX: initialViewport.panX,
+  panY: initialViewport.panY,
   showInfoPanel: false,
   searchQuery: '',
   selectedLevel: null,
@@ -41,32 +45,58 @@ export const useUIStore = create<UIState>((set) => ({
       Math.min(LAYOUT_CONSTANTS.maxZoom, zoom)
     );
     set({ zoom: clampedZoom });
+
+    // Persist to localStorage
+    const { panX, panY } = get();
+    saveViewport(clampedZoom, panX, panY);
   },
 
-  setPan: (x, y) => set({ panX: x, panY: y }),
+  setPan: (x, y) => {
+    set({ panX: x, panY: y });
 
-  zoomIn: () =>
-    set((state) => ({
-      zoom: Math.min(
-        state.zoom + LAYOUT_CONSTANTS.zoomStep,
-        LAYOUT_CONSTANTS.maxZoom
-      ),
-    })),
+    // Persist to localStorage
+    const { zoom } = get();
+    saveViewport(zoom, x, y);
+  },
 
-  zoomOut: () =>
-    set((state) => ({
-      zoom: Math.max(
-        state.zoom - LAYOUT_CONSTANTS.zoomStep,
-        LAYOUT_CONSTANTS.minZoom
-      ),
-    })),
+  zoomIn: () => {
+    const newZoom = Math.min(
+      get().zoom + LAYOUT_CONSTANTS.zoomStep,
+      LAYOUT_CONSTANTS.maxZoom
+    );
+    set({ zoom: newZoom });
 
-  resetView: () =>
+    // Persist to localStorage
+    const { panX, panY } = get();
+    saveViewport(newZoom, panX, panY);
+  },
+
+  zoomOut: () => {
+    const newZoom = Math.max(
+      get().zoom - LAYOUT_CONSTANTS.zoomStep,
+      LAYOUT_CONSTANTS.minZoom
+    );
+    set({ zoom: newZoom });
+
+    // Persist to localStorage
+    const { panX, panY } = get();
+    saveViewport(newZoom, panX, panY);
+  },
+
+  resetView: () => {
     set({
       zoom: LAYOUT_CONSTANTS.defaultZoom,
       panX: CANVAS_CONSTANTS.defaultPanX,
       panY: CANVAS_CONSTANTS.defaultPanY,
-    }),
+    });
+
+    // Persist reset immediately (not debounced)
+    saveViewportImmediate(
+      LAYOUT_CONSTANTS.defaultZoom,
+      CANVAS_CONSTANTS.defaultPanX,
+      CANVAS_CONSTANTS.defaultPanY
+    );
+  },
 
   toggleInfoPanel: () =>
     set((state) => ({ showInfoPanel: !state.showInfoPanel })),
