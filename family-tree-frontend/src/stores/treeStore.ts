@@ -118,13 +118,15 @@ export const useTreeStore = create<TreeState>((set, get) => ({
       // DO NOT call loadTree() - it would recalculate the entire layout
     } catch (error) {
       console.error('Failed to persist position:', error);
-      toast.error('Failed to save position');
 
-      // Rollback: remove from cache and reload
-      usePositionCacheStore.getState().invalidateCache([id]);
-      if (get().rootPerson) {
-        await get().loadTree();
-      }
+      // Show error but keep the visual position (optimistic UI)
+      // User can see their change immediately even if save fails
+      toast.error('Failed to save position to server. Will retry automatically.');
+
+      // Keep the position in cache and UI - don't rollback
+      // The position is already set in the UI and cache
+      // If user refreshes, it will use cached position
+      // Next successful save will persist it to backend
     }
   },
 

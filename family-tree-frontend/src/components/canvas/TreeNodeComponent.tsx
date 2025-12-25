@@ -46,7 +46,11 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
       x={node.x}
       y={node.y}
       draggable={isDraggable}
-      onDragEnd={(e) => handleDragEnd(node.id, e)}
+      onDragEnd={(e) => {
+        // CRITICAL: Stop event propagation to prevent Stage from receiving drag events
+        e.cancelBubble = true;
+        handleDragEnd(node.id, e);
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => setSelectedNode(node.id)}

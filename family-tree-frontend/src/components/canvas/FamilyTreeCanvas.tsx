@@ -9,6 +9,7 @@ import { EditPersonModal } from '../modals/EditPersonModal';
 import { DeletePersonModal } from '../modals/DeletePersonModal';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
+import { useViewportPreservation } from '../../hooks/useViewportPreservation';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
 import type { Connection, TreeNode } from '../../models/TreeNode';
 import type { Person } from '../../models/Person';
@@ -28,6 +29,9 @@ export const FamilyTreeCanvas: React.FC = () => {
   const setZoom = useUIStore((state) => state.setZoom);
   const setPan = useUIStore((state) => state.setPan);
   const mode = useUIStore((state) => state.mode);
+
+  // Preserve viewport during tree operations to prevent unexpected jumps
+  useViewportPreservation();
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -114,7 +118,10 @@ export const FamilyTreeCanvas: React.FC = () => {
 
   // Handle stage drag (pan) in view mode
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
-    setPan(e.target.x(), e.target.y());
+    // Only update pan if this is actually the Stage, not a node
+    if (e.target === stageRef.current) {
+      setPan(e.target.x(), e.target.y());
+    }
   };
 
   // Handle right-click on node
