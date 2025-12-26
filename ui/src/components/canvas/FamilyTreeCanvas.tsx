@@ -1,4 +1,4 @@
-import { useRef, useState, useMemo, useEffect } from 'react';
+import { useRef, useState, useMemo, useEffect, useCallback } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 import { TreeNodeComponent } from './TreeNodeComponent';
@@ -10,7 +10,8 @@ import { DeletePersonModal } from '../modals/DeletePersonModal';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useViewportPreservation } from '../../hooks/useViewportPreservation';
-import { NODE_DIMENSIONS } from '../../constants/dimensions';
+import { NODE_DIMENSIONS, LAYOUT_CONSTANTS } from '../../constants/dimensions';
+import { throttleWheel } from '../../utils/smoothZoom';
 import type { Connection, TreeNode } from '../../models/TreeNode';
 import type { Person } from '../../models/Person';
 
@@ -145,8 +146,8 @@ export const FamilyTreeCanvas: React.FC = () => {
     return conns;
   }, [allNodes, visibleNodes]);
 
-  // Handle zoom with mouse wheel
-  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+  // Handle zoom with mouse wheel (memoized with useCallback for performance)
+  const handleWheelCore = useCallback((e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
 
     // Disable hover effects during zoom for better performance
@@ -157,7 +158,8 @@ export const FamilyTreeCanvas: React.FC = () => {
       clearTimeout(zoomTimeoutRef.current);
     }
 
-    const scaleBy = 1.05;
+    // Use faster zoom factor from constants (1.08 instead of 1.05 = 60% faster)
+    const scaleBy = LAYOUT_CONSTANTS.wheelZoomFactor;
     const stage = stageRef.current;
     if (!stage) return;
 
@@ -186,7 +188,13 @@ export const FamilyTreeCanvas: React.FC = () => {
     zoomTimeoutRef.current = setTimeout(() => {
       setIsZooming(false);
     }, 150);
-  };
+  }, [zoom, panX, panY, setZoom, setPan, setIsZooming]);
+
+  // Throttled wheel handler - limits to 16ms (60fps) for smoother performance
+  const handleWheel = useMemo(
+    () => throttleWheel(handleWheelCore, 16),
+    [handleWheelCore]
+  );
 
   // Handle stage drag (pan) in view mode
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
