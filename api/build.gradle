@@ -58,3 +58,10 @@ tasks.named('test') {
 tasks.named('bootJar') {
     archiveFileName = 'family-tree-api.jar'
 }
+
+// Make bootRun task use environment variables
+tasks.named('bootRun') {
+    bootRun.systemProperty 'NEO4J_URI', System.getenv('NEO4J_URI') ?: 'bolt://neo4j:7687'
+    bootRun.systemProperty 'NEO4J_USERNAME', System.getenv('NEO4J_USERNAME') ?: 'neo4j'
+    bootRun.systemProperty 'NEO4J_PASSWORD', System.getenv('NEO4J_PASSWORD') ?: 'password'
+}
