@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
 import type { TreeNode } from '../../models/TreeNode';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
@@ -15,10 +15,12 @@ interface TreeNodeComponentProps {
 /**
  * Individual tree node component rendered with Konva
  * Displays person information and handles interactions
+ * Memoized to prevent unnecessary re-renders when props haven't changed
  */
-export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRightClick }) => {
+const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRightClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const mode = useUIStore((state) => state.mode);
+  const isZooming = useUIStore((state) => state.isZooming);
   const selectedNodeId = useTreeStore((state) => state.selectedNodeId);
   const setSelectedNode = useTreeStore((state) => state.setSelectedNode);
   const { handleDragEnd } = useNodeDrag();
@@ -51,8 +53,8 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
         e.cancelBubble = true;
         handleDragEnd(node.id, e);
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isZooming && setIsHovered(true)}
+      onMouseLeave={() => !isZooming && setIsHovered(false)}
       onClick={() => setSelectedNode(node.id)}
       onTap={() => setSelectedNode(node.id)}
       onContextMenu={handleContextMenu}
@@ -117,3 +119,21 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
     </Group>
   );
 };
+
+/**
+ * Memoized TreeNodeComponent - only re-renders when node data actually changes
+ * Custom comparison checks critical node properties for optimal performance
+ */
+export const TreeNodeComponent = memo(TreeNodeComponentBase, (prevProps, nextProps) => {
+  // Return true if props are equal (skip re-render)
+  // Return false if props changed (do re-render)
+  return (
+    prevProps.node.id === nextProps.node.id &&
+    prevProps.node.x === nextProps.node.x &&
+    prevProps.node.y === nextProps.node.y &&
+    prevProps.node.name === nextProps.node.name &&
+    prevProps.node.address === nextProps.node.address &&
+    prevProps.node.signature === nextProps.node.signature &&
+    prevProps.node.level === nextProps.node.level
+  );
+});

@@ -13,8 +13,9 @@ interface ViewportState {
 const VIEWPORT_STORAGE_KEY = 'familyTree_viewport';
 
 /**
- * Debounced save function (300ms delay)
+ * Debounced save function (1000ms delay)
  * Prevents excessive localStorage writes during drag/zoom operations
+ * Saves 1 second after user stops zooming for better performance
  */
 const debouncedSave = debounce(
   (zoom: number, panX: number, panY: number) => {
@@ -25,7 +26,7 @@ const debouncedSave = debounce(
       console.error('Failed to save viewport state:', error);
     }
   },
-  300
+  1000
 );
 
 /**
