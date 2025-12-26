@@ -7,6 +7,7 @@ import { ContextMenu } from './ContextMenu';
 import { AddPersonModal } from '../modals/AddPersonModal';
 import { EditPersonModal } from '../modals/EditPersonModal';
 import { DeletePersonModal } from '../modals/DeletePersonModal';
+import { InlineChildPopup } from './InlineChildPopup';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useViewportPreservation } from '../../hooks/useViewportPreservation';
@@ -38,6 +39,7 @@ export const FamilyTreeCanvas: React.FC = () => {
   const setPan = useUIStore((state) => state.setPan);
   const mode = useUIStore((state) => state.mode);
   const setIsZooming = useUIStore((state) => state.setIsZooming);
+  const clearSelectedParent = useUIStore((state) => state.clearSelectedParent);
 
   // Preserve viewport during tree operations to prevent unexpected jumps
   useViewportPreservation();
@@ -204,6 +206,14 @@ export const FamilyTreeCanvas: React.FC = () => {
     }
   };
 
+  // Click on stage background to deselect parent
+  const handleStageClick = useCallback((e: any) => {
+    // Only clear if clicking the stage itself (not a node)
+    if (e.target === e.target.getStage()) {
+      clearSelectedParent();
+    }
+  }, [clearSelectedParent]);
+
   // Handle right-click on node
   const handleNodeRightClick = (node: TreeNode, x: number, y: number) => {
     setContextMenu({ visible: true, x, y, node });
@@ -239,13 +249,15 @@ export const FamilyTreeCanvas: React.FC = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: '100vh', overflow: 'hidden', position: 'relative' }}>
       <Stage
         ref={stageRef}
         {...stageConfig}
         onWheel={handleWheel}
         draggable={mode === 'view'}
         onDragEnd={handleDragEnd}
+        onClick={handleStageClick}
+        onTap={handleStageClick}
       >
         {/* Connections layer */}
         <Layer>
@@ -305,6 +317,9 @@ export const FamilyTreeCanvas: React.FC = () => {
         toggle={() => setDeleteModalOpen(false)}
         person={selectedPerson}
       />
+
+      {/* Inline Child Popup - rendered outside Stage for proper HTML rendering */}
+      <InlineChildPopup />
     </div>
   );
 };
