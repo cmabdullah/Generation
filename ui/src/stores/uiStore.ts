@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { ViewMode } from '../models/TreeNode';
 import { LAYOUT_CONSTANTS, CANVAS_CONSTANTS } from '../constants/dimensions';
 import { saveViewport, saveViewportImmediate, loadViewport } from '../utils/viewportStorage';
+import { smoothZoom } from '../utils/smoothZoom';
 
 interface UIState {
   mode: ViewMode;
@@ -63,27 +64,49 @@ export const useUIStore = create<UIState>((set, get) => ({
   },
 
   zoomIn: () => {
-    const newZoom = Math.min(
-      get().zoom + LAYOUT_CONSTANTS.zoomStep,
+    const currentZoom = get().zoom;
+    const targetZoom = Math.min(
+      currentZoom + LAYOUT_CONSTANTS.zoomStep,
       LAYOUT_CONSTANTS.maxZoom
     );
-    set({ zoom: newZoom });
 
-    // Persist to localStorage
-    const { panX, panY } = get();
-    saveViewport(newZoom, panX, panY);
+    // Use smooth animation for better UX
+    smoothZoom({
+      from: currentZoom,
+      to: targetZoom,
+      duration: LAYOUT_CONSTANTS.zoomAnimationDuration,
+      onUpdate: (value) => {
+        set({ zoom: value });
+      },
+      onComplete: () => {
+        // Persist to localStorage only after animation completes
+        const { panX, panY } = get();
+        saveViewport(targetZoom, panX, panY);
+      },
+    });
   },
 
   zoomOut: () => {
-    const newZoom = Math.max(
-      get().zoom - LAYOUT_CONSTANTS.zoomStep,
+    const currentZoom = get().zoom;
+    const targetZoom = Math.max(
+      currentZoom - LAYOUT_CONSTANTS.zoomStep,
       LAYOUT_CONSTANTS.minZoom
     );
-    set({ zoom: newZoom });
 
-    // Persist to localStorage
-    const { panX, panY } = get();
-    saveViewport(newZoom, panX, panY);
+    // Use smooth animation for better UX
+    smoothZoom({
+      from: currentZoom,
+      to: targetZoom,
+      duration: LAYOUT_CONSTANTS.zoomAnimationDuration,
+      onUpdate: (value) => {
+        set({ zoom: value });
+      },
+      onComplete: () => {
+        // Persist to localStorage only after animation completes
+        const { panX, panY } = get();
+        saveViewport(targetZoom, panX, panY);
+      },
+    });
   },
 
   resetView: () => {
