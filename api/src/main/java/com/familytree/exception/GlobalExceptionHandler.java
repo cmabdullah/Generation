@@ -1,5 +1,6 @@
 package com.familytree.exception;
 
+import com.familytree.constant.Constants;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,13 @@ public class GlobalExceptionHandler {
 			PersonNotFoundException ex, HttpServletRequest request) {
 		log.error("Person not found: {}", ex.getMessage());
 
+		Long responseTime = calculateResponseTime(request);
 		ErrorResponse errorResponse = ErrorResponse.of(
 				HttpStatus.NOT_FOUND.value(),
 				"Not Found",
 				ex.getMessage(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				responseTime
 		);
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
@@ -39,11 +42,13 @@ public class GlobalExceptionHandler {
 			PersonAlreadyExistsException ex, HttpServletRequest request) {
 		log.error("Person already exists: {}", ex.getMessage());
 
+		Long responseTime = calculateResponseTime(request);
 		ErrorResponse errorResponse = ErrorResponse.of(
 				HttpStatus.CONFLICT.value(),
 				"Conflict",
 				ex.getMessage(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				responseTime
 		);
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
@@ -54,11 +59,13 @@ public class GlobalExceptionHandler {
 			InvalidDataException ex, HttpServletRequest request) {
 		log.error("Invalid data: {}", ex.getMessage());
 
+		Long responseTime = calculateResponseTime(request);
 		ErrorResponse errorResponse = ErrorResponse.of(
 				HttpStatus.BAD_REQUEST.value(),
 				"Bad Request",
 				ex.getMessage(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				responseTime
 		);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -76,6 +83,7 @@ public class GlobalExceptionHandler {
 			errors.put(fieldName, errorMessage);
 		});
 
+		Long responseTime = calculateResponseTime(request);
 		Map<String, Object> response = new HashMap<>();
 		response.put("timestamp", java.time.LocalDateTime.now());
 		response.put("status", HttpStatus.BAD_REQUEST.value());
@@ -83,6 +91,7 @@ public class GlobalExceptionHandler {
 		response.put("message", "Input validation failed");
 		response.put("errors", errors);
 		response.put("path", request.getRequestURI());
+		response.put("responseTime", responseTime);
 
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 	}
@@ -92,13 +101,26 @@ public class GlobalExceptionHandler {
 			Exception ex, HttpServletRequest request) {
 		log.error("Unexpected error: ", ex);
 
+		Long responseTime = calculateResponseTime(request);
 		ErrorResponse errorResponse = ErrorResponse.of(
 				HttpStatus.INTERNAL_SERVER_ERROR.value(),
 				"Internal Server Error",
 				"An unexpected error occurred: " + ex.getMessage(),
-				request.getRequestURI()
+				request.getRequestURI(),
+				responseTime
 		);
 
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
+
+	/**
+	 * Calculate response time from request start time attribute
+	 */
+	private Long calculateResponseTime(HttpServletRequest request) {
+		Long startTime = (Long) request.getAttribute(Constants.REQUEST_START_TIME);
+		if (startTime != null) {
+			return System.currentTimeMillis() - startTime;
+		}
+		return null;
 	}
 }
