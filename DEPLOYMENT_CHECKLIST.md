@@ -110,7 +110,7 @@ Use this checklist to ensure a successful deployment of the Family Tree applicat
   ```bash
   scp api/build/libs/family-tree-api.jar vm:/tmp/
   ```
-- [ ] Deploy API (first time)
+- [ ] Deploy API (first time) this command will not completely work as password load from environment, so make sure to edit the service file before enabling it
   ```bash
   ssh vm "sudo -u familytree bash /opt/family-tree/scripts/deploy-api.sh 1.0.0 /tmp/family-tree-api.jar"
   ```
