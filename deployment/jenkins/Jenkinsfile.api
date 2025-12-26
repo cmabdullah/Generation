@@ -1,0 +1,97 @@
+// Jenkinsfile.api - API-only deployment pipeline
+pipeline {
+    agent any
+
+    environment {
+        VERSION = sh(script: "git describe --tags --always", returnStdout: true).trim()
+        API_JAR = "api/build/libs/family-tree-api.jar"
+        PROD_VM_USER = 'familytree'
+        PROD_VM_HOST = 'vm'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                dir('api') {
+                    sh '''
+                        chmod +x gradlew
+                        ./gradlew clean bootJar --no-daemon
+                    '''
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                dir('api') {
+                    sh './gradlew test --no-daemon'
+                }
+            }
+            post {
+                always {
+                    junit 'api/build/test-results/test/*.xml'
+                }
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sshagent(['vm-ssh-key']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no \
+                            ${API_JAR} \
+                            ${PROD_VM_USER}@${PROD_VM_HOST}:/tmp/family-tree-api.jar
+
+                        ssh -o StrictHostKeyChecking=no \
+                            ${PROD_VM_USER}@${PROD_VM_HOST} \
+                            'bash /opt/family-tree/scripts/deploy-api.sh ${VERSION} /tmp/family-tree-api.jar'
+                    """
+                }
+            }
+        }
+
+        stage('Health Check') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sshagent(['vm-ssh-key']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no \
+                            ${PROD_VM_USER}@${PROD_VM_HOST} \
+                            'curl -f http://localhost:8081/actuator/health || exit 1'
+                    """
+                }
+                echo "✓ API health check passed"
+            }
+        }
+    }
+
+    post {
+        failure {
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    sshagent(['vm-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                ${PROD_VM_USER}@${PROD_VM_HOST} \
+                                'bash /opt/family-tree/scripts/rollback.sh api'
+                        """
+                    }
+                }
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

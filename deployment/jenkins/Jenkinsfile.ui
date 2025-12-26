@@ -1,0 +1,105 @@
+// Jenkinsfile.ui - UI-only deployment pipeline
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'NodeJS-18'
+    }
+
+    environment {
+        VERSION = sh(script: "git describe --tags --always", returnStdout: true).trim()
+        PROD_VM_USER = 'familytree'
+        PROD_VM_HOST = 'vm'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        timestamps()
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                dir('ui') {
+                    sh '''
+                        npm ci
+                        npm run build
+                    '''
+                }
+            }
+        }
+
+        stage('Lint') {
+            steps {
+                dir('ui') {
+                    sh 'npm run lint || true'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'tar -czf ui-dist.tar.gz -C ui/dist .'
+                archiveArtifacts artifacts: 'ui-dist.tar.gz', fingerprint: true
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sshagent(['vm-ssh-key']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no \
+                            ui-dist.tar.gz \
+                            ${PROD_VM_USER}@${PROD_VM_HOST}:/tmp/
+
+                        ssh -o StrictHostKeyChecking=no \
+                            ${PROD_VM_USER}@${PROD_VM_HOST} \
+                            'mkdir -p /tmp/ui-dist && \
+                             tar -xzf /tmp/ui-dist.tar.gz -C /tmp/ui-dist && \
+                             bash /opt/family-tree/scripts/deploy-ui.sh /tmp/ui-dist && \
+                             rm -rf /tmp/ui-dist /tmp/ui-dist.tar.gz'
+                    """
+                }
+            }
+        }
+
+        stage('Health Check') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sshagent(['vm-ssh-key']) {
+                    sh """
+                        ssh -o StrictHostKeyChecking=no \
+                            ${PROD_VM_USER}@${PROD_VM_HOST} \
+                            'curl -f http://localhost:80 || exit 1'
+                    """
+                }
+                echo "✓ UI health check passed"
+            }
+        }
+    }
+
+    post {
+        failure {
+            script {
+                if (env.BRANCH_NAME == 'master') {
+                    sshagent(['vm-ssh-key']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no \
+                                ${PROD_VM_USER}@${PROD_VM_HOST} \
+                                'bash /opt/family-tree/scripts/rollback.sh ui'
+                        """
+                    }
+                }
+            }
+        }
+        always {
+            cleanWs()
+        }
+    }
+}
