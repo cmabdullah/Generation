@@ -1,0 +1,35 @@
+[Unit]
+Description=Family Tree API Service
+After=network.target neo4j.service
+Requires=neo4j.service
+
+[Service]
+Type=simple
+User=familytree
+Group=familytree
+WorkingDirectory=/opt/family-tree/api/current
+
+# Environment variables
+Environment="JAVA_OPTS=-Xmx512m -Xms256m"
+Environment="SPRING_PROFILES_ACTIVE=prod"
+Environment="NEO4J_URI=bolt://localhost:7687"
+Environment="NEO4J_USERNAME=neo4j"
+Environment="NEO4J_PASSWORD=your-neo4j-password-here"
+Environment="SERVER_PORT=8081"
+
+# Execute
+ExecStart=/usr/bin/java $JAVA_OPTS -jar /opt/family-tree/api/current/family-tree-api.jar
+ExecStop=/bin/kill -15 $MAINPID
+
+# Restart policy
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/opt/family-tree/logs/api-stdout.log
+StandardError=append:/opt/family-tree/logs/api-stderr.log
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
