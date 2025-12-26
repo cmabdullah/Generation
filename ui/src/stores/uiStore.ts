@@ -55,7 +55,12 @@ export const useUIStore = create<UIState>((set, get) => ({
   selectedParentNode: null,
   childPopupMode: null,
 
-  setMode: (mode) => set({ mode }),
+  setMode: (mode) => set({
+    mode,
+    // Clear selected parent when switching modes
+    selectedParentNode: null,
+    childPopupMode: null,
+  }),
 
   setZoom: (zoom) => {
     const clampedZoom = Math.max(

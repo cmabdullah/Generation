@@ -180,6 +180,12 @@ const SingleChildQuickForm: React.FC = () => {
  */
 export const InlineChildPopup: React.FC = () => {
   const childPopupMode = useUIStore((state) => state.childPopupMode);
+  const mode = useUIStore((state) => state.mode);
+
+  // Only show popup in EDIT mode
+  if (mode !== 'edit') {
+    return null;
+  }
 
   if (childPopupMode === 'single') {
     return <SingleChildQuickForm />;

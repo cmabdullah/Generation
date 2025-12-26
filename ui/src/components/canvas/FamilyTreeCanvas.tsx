@@ -206,13 +206,13 @@ export const FamilyTreeCanvas: React.FC = () => {
     }
   };
 
-  // Click on stage background to deselect parent
+  // Click on stage background to deselect parent (only in edit mode)
   const handleStageClick = useCallback((e: any) => {
-    // Only clear if clicking the stage itself (not a node)
-    if (e.target === e.target.getStage()) {
+    // Only clear if clicking the stage itself (not a node) and in edit mode
+    if (e.target === e.target.getStage() && mode === 'edit') {
       clearSelectedParent();
     }
-  }, [clearSelectedParent]);
+  }, [clearSelectedParent, mode]);
 
   // Handle right-click on node
   const handleNodeRightClick = (node: TreeNode, x: number, y: number) => {
