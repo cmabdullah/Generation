@@ -23,6 +23,10 @@ import java.util.List;
 /**
  * REST Controller for Family Tree API
  */
+@CrossOrigin(
+		origins = "*", // Allow all origins
+		allowCredentials = "false" // Credentials not allowed
+)
 @RestController
 @RequestMapping("/api/family-tree")
 @RequiredArgsConstructor
