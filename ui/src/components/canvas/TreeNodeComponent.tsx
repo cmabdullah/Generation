@@ -43,19 +43,21 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
   const handleNodeClick = (e: any) => {
     e.cancelBubble = true; // Prevent stage click
 
-    // Set as selected parent for inline popup
-    setSelectedParent({
-      id: node.id,
-      name: node.name,
-      level: node.level || 1,
-      position: {
-        x: node.x,
-        y: node.y,
-      },
-    });
-
-    // Also set as selected node for info panel
+    // Set as selected node for info panel (always)
     setSelectedNode(node.id);
+
+    // Only set as selected parent for inline popup in EDIT mode
+    if (mode === 'edit') {
+      setSelectedParent({
+        id: node.id,
+        name: node.name,
+        level: node.level || 1,
+        position: {
+          x: node.x,
+          y: node.y,
+        },
+      });
+    }
   };
 
   // Truncate long names
