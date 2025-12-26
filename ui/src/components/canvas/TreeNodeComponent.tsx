@@ -23,9 +23,12 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
   const isZooming = useUIStore((state) => state.isZooming);
   const selectedNodeId = useTreeStore((state) => state.selectedNodeId);
   const setSelectedNode = useTreeStore((state) => state.setSelectedNode);
+  const setSelectedParent = useUIStore((state) => state.setSelectedParent);
+  const selectedParentNode = useUIStore((state) => state.selectedParentNode);
   const { handleDragEnd } = useNodeDrag();
 
   const isSelected = selectedNodeId === node.id;
+  const isSelectedAsParent = selectedParentNode?.id === node.id;
   const isDraggable = mode === 'edit';
 
   const handleContextMenu = (e: any) => {
@@ -35,6 +38,24 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
       const pointerPos = stage.getPointerPosition();
       onRightClick(node, pointerPos.x, pointerPos.y);
     }
+  };
+
+  const handleNodeClick = (e: any) => {
+    e.cancelBubble = true; // Prevent stage click
+
+    // Set as selected parent for inline popup
+    setSelectedParent({
+      id: node.id,
+      name: node.name,
+      level: node.level || 1,
+      position: {
+        x: node.x,
+        y: node.y,
+      },
+    });
+
+    // Also set as selected node for info panel
+    setSelectedNode(node.id);
   };
 
   // Truncate long names
@@ -55,21 +76,34 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
       }}
       onMouseEnter={() => !isZooming && setIsHovered(true)}
       onMouseLeave={() => !isZooming && setIsHovered(false)}
-      onClick={() => setSelectedNode(node.id)}
-      onTap={() => setSelectedNode(node.id)}
+      onClick={handleNodeClick}
+      onTap={handleNodeClick}
       onContextMenu={handleContextMenu}
     >
+      {/* Glow effect when selected as parent */}
+      {isSelectedAsParent && (
+        <Circle
+          radius={70}
+          fill="transparent"
+          stroke="#007bff"
+          strokeWidth={3}
+          shadowBlur={15}
+          shadowColor="#007bff"
+          shadowOpacity={0.6}
+        />
+      )}
+
       {/* Node card background */}
       <Rect
         width={NODE_DIMENSIONS.width}
         height={NODE_DIMENSIONS.height}
         fill={getColorForLevel(node.level)}
         cornerRadius={NODE_DIMENSIONS.cornerRadius}
-        shadowBlur={isHovered || isSelected ? 10 : 0}
+        shadowBlur={isHovered || isSelected || isSelectedAsParent ? 10 : 0}
         shadowColor={UI_COLORS.shadow}
         shadowOpacity={0.3}
-        stroke={isSelected ? UI_COLORS.selected : UI_COLORS.white}
-        strokeWidth={isSelected ? 3 : 1}
+        stroke={isSelected || isSelectedAsParent ? UI_COLORS.selected : UI_COLORS.white}
+        strokeWidth={isSelected || isSelectedAsParent ? 3 : 1}
       />
 
       {/* Name text */}

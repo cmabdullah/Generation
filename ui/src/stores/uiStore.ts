@@ -14,6 +14,15 @@ interface UIState {
   selectedLevel: number | null;
   isZooming: boolean;
 
+  // Inline popup state for multi-child creation
+  selectedParentNode: {
+    id: string;
+    name: string;
+    level: number;
+    position: { x: number; y: number };
+  } | null;
+  childPopupMode: 'single' | 'multiple' | null;
+
   // Actions
   setMode: (mode: ViewMode) => void;
   setZoom: (zoom: number) => void;
@@ -26,6 +35,9 @@ interface UIState {
   setSearchQuery: (query: string) => void;
   setSelectedLevel: (level: number | null) => void;
   setIsZooming: (isZooming: boolean) => void;
+  setSelectedParent: (node: UIState['selectedParentNode']) => void;
+  setChildPopupMode: (mode: 'single' | 'multiple' | null) => void;
+  clearSelectedParent: () => void;
 }
 
 // Load persisted viewport state on initialization
@@ -40,6 +52,8 @@ export const useUIStore = create<UIState>((set, get) => ({
   searchQuery: '',
   selectedLevel: null,
   isZooming: false,
+  selectedParentNode: null,
+  childPopupMode: null,
 
   setMode: (mode) => set({ mode }),
 
@@ -134,4 +148,16 @@ export const useUIStore = create<UIState>((set, get) => ({
   setSelectedLevel: (level) => set({ selectedLevel: level }),
 
   setIsZooming: (isZooming) => set({ isZooming }),
+
+  setSelectedParent: (node) => set({
+    selectedParentNode: node,
+    childPopupMode: node ? 'single' : null,
+  }),
+
+  setChildPopupMode: (mode) => set({ childPopupMode: mode }),
+
+  clearSelectedParent: () => set({
+    selectedParentNode: null,
+    childPopupMode: null,
+  }),
 }));
