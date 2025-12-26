@@ -41,7 +41,7 @@ sudo systemctl stop family-tree-api || true
 
 # Update symlink
 echo "Updating current version symlink..."
-rm -f "$CURRENT_LINK"
+rm -rf "$CURRENT_LINK"
 ln -s "$RELEASE_DIR" "$CURRENT_LINK"
 
 # Start service
