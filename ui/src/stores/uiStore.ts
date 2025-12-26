@@ -11,6 +11,7 @@ interface UIState {
   showInfoPanel: boolean;
   searchQuery: string;
   selectedLevel: number | null;
+  isZooming: boolean;
 
   // Actions
   setMode: (mode: ViewMode) => void;
@@ -23,6 +24,7 @@ interface UIState {
   setShowInfoPanel: (show: boolean) => void;
   setSearchQuery: (query: string) => void;
   setSelectedLevel: (level: number | null) => void;
+  setIsZooming: (isZooming: boolean) => void;
 }
 
 // Load persisted viewport state on initialization
@@ -36,6 +38,7 @@ export const useUIStore = create<UIState>((set, get) => ({
   showInfoPanel: false,
   searchQuery: '',
   selectedLevel: null,
+  isZooming: false,
 
   setMode: (mode) => set({ mode }),
 
@@ -106,4 +109,6 @@ export const useUIStore = create<UIState>((set, get) => ({
   setSearchQuery: (query) => set({ searchQuery: query }),
 
   setSelectedLevel: (level) => set({ selectedLevel: level }),
+
+  setIsZooming: (isZooming) => set({ isZooming }),
 }));
