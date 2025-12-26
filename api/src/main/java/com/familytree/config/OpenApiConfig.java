@@ -20,11 +20,19 @@ public class OpenApiConfig {
 	@Value("${server.port:8080}")
 	private int serverPort;
 
+	@Value("${app.server.url:#{null}}")
+	private String serverUrl;
+
 	@Bean
 	public OpenAPI familyTreeOpenAPI() {
 		Server localServer = new Server();
 		localServer.setUrl("http://localhost:" + serverPort);
 		localServer.setDescription("Local Development Server");
+
+		// Add production server if configured
+		Server prodServer = new Server();
+		prodServer.setUrl(serverUrl != null ? serverUrl : "http://200.69.21.86:" + serverPort);
+		prodServer.setDescription("Production Server");
 
 		Contact contact = new Contact();
 		contact.setName("Family Tree API Team");
@@ -45,6 +53,6 @@ public class OpenApiConfig {
 
 		return new OpenAPI()
 				.info(info)
-				.servers(List.of(localServer));
+				.servers(List.of(prodServer, localServer));
 	}
 }
