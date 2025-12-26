@@ -82,19 +82,6 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
       onTap={handleNodeClick}
       onContextMenu={handleContextMenu}
     >
-      {/* Glow effect when selected as parent */}
-      {isSelectedAsParent && (
-        <Circle
-          radius={70}
-          fill="transparent"
-          stroke="#007bff"
-          strokeWidth={3}
-          shadowBlur={15}
-          shadowColor="#007bff"
-          shadowOpacity={0.6}
-        />
-      )}
-
       {/* Node card background */}
       <Rect
         width={NODE_DIMENSIONS.width}
