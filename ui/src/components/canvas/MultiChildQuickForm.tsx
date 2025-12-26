@@ -135,23 +135,55 @@ export const MultiChildQuickForm: React.FC = () => {
   const popupX = selectedParent.position.x * zoom + panX - 150;
   const popupY = selectedParent.position.y * zoom + panY + 130;
 
+  // Calculate connection line coordinates
+  const nodeBottomX = selectedParent.position.x * zoom + panX + 60; // Center of node (120px wide / 2)
+  const nodeBottomY = selectedParent.position.y * zoom + panY + 100; // Bottom of node
+  const popupTopX = popupX + 200; // Center of popup (400px wide / 2)
+  const popupTopY = popupY;
+
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: popupX,
-        top: popupY,
-        zIndex: 1000,
-        background: '#fff',
-        border: '2px solid #007bff',
-        borderRadius: '8px',
-        padding: '16px',
-        boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-        minWidth: '400px',
-        maxWidth: '500px',
-        animation: 'fadeInUp 0.2s ease-out',
-      }}
-    >
+    <>
+      {/* Visual connection line from node to popup */}
+      <svg
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 999,
+        }}
+      >
+        <line
+          x1={nodeBottomX}
+          y1={nodeBottomY}
+          x2={popupTopX}
+          y2={popupTopY}
+          stroke="#007bff"
+          strokeWidth="2"
+          strokeDasharray="5,5"
+          opacity="0.6"
+        />
+      </svg>
+
+      {/* Popup */}
+      <div
+        style={{
+          position: 'absolute',
+          left: popupX,
+          top: popupY,
+          zIndex: 1000,
+          background: '#fff',
+          border: '2px solid #007bff',
+          borderRadius: '8px',
+          padding: '16px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          minWidth: '400px',
+          maxWidth: '500px',
+          animation: 'fadeInUp 0.2s ease-out',
+        }}
+      >
       <div style={{ marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontWeight: 'bold', fontSize: '14px' }}>
           👨‍👩‍👧‍👦 Add Children to {selectedParent.name}
@@ -236,6 +268,7 @@ export const MultiChildQuickForm: React.FC = () => {
       <div style={{ fontSize: '11px', color: '#666' }}>
         💡 Press <kbd>Ctrl+Enter</kbd> to create • <kbd>Esc</kbd> to go back
       </div>
-    </div>
+      </div>
+    </>
   );
 };
