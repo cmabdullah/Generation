@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import { TreeNavbar } from './components/navbar/TreeNavbar';
 import { FamilyTreeCanvas } from './components/canvas/FamilyTreeCanvas';
 import { InfoPanel } from './components/sidebar/InfoPanel';
+import { Footer } from './components/footer/Footer';
 import { useTreeStore } from './stores/treeStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -50,10 +51,11 @@ function App() {
   return (
     <div className="App">
       <TreeNavbar />
-      <div style={{ marginTop: '60px' }}>
+      <div style={{ marginTop: '60px', marginBottom: '40px' }}>
         <FamilyTreeCanvas />
       </div>
       <InfoPanel />
+      <Footer />
       <ToastContainer
         position="bottom-right"
         autoClose={3000}
@@ -64,6 +66,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        style={{ bottom: '50px' }}
       />
     </div>
   );
