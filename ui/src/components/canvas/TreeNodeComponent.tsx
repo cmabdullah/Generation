@@ -7,7 +7,7 @@ import { useUIStore } from '../../stores/uiStore';
 import { useTreeStore } from '../../stores/treeStore';
 import { useNodeDrag } from '../../hooks/useNodeDrag';
 import { getAvatarUrl } from '../../utils/avatarUtils';
-import { formatMobile, truncateText, formatGeneration } from '../../utils/formatUtils';
+import { formatMobile, truncateText, formatGeneration, getAdaptiveMultilineTextSize } from '../../utils/formatUtils';
 
 interface TreeNodeComponentProps {
   node: TreeNode;
@@ -160,14 +160,33 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
   const avatarCenterX = cardWidth / 2; // 100px (center of 200px card)
   const avatarCenterY = avatarRadius - NODE_DIMENSIONS.avatarOverlap; // 12px (32 - 20 = 12)
 
-  // Text Y positions (from design spec)
-  const nameY = 52;
-  const addressY = 75;
-  const mobileY = 93;
-  const generationY = 115;
-
   // Get avatar URL with gender-based placeholder (uses SVG data URIs)
   const avatarUrl = getAvatarUrl(node.avatar, node.gender);
+
+  // Calculate adaptive multi-line text size for name (with 8px padding on each side)
+  const namePadding = 16; // 8px on each side
+  const availableNameWidth = cardWidth - namePadding;
+  const {
+    fontSize: nameFontSize,
+    displayText: nameDisplayText,
+    needsWrapping
+  } = getAdaptiveMultilineTextSize(
+    node.name,
+    availableNameWidth,
+    2, // Allow up to 2 lines
+    [12, 11, 10, 9], // Font size fallback levels (slightly smaller for 2-line support)
+    '600' // Font weight
+  );
+
+  // Text Y positions (adjusted for potential 2-line names)
+  const nameY = 48;
+  const nameLineHeight = nameFontSize * 1.3; // 1.3 line height multiplier
+  const nameHeight = needsWrapping ? nameLineHeight * 2 : nameLineHeight;
+
+  // Adjust positions based on whether name wraps
+  const addressY = nameY + nameHeight + 8; // 8px gap after name
+  const mobileY = addressY + 20;
+  const generationY = mobileY + 20;
 
   return (
     <Group
@@ -226,16 +245,20 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         strokeWidth={isSelected || isSelectedAsParent ? 4 : NODE_DIMENSIONS.avatarBorderWidth}
       />
 
-      {/* Name text */}
+      {/* Name text - adaptive sizing with multi-line support */}
       <Text
-        text={truncateText(node.name, 22)}
-        x={0}
+        text={nameDisplayText}
+        x={namePadding / 2}
         y={nameY}
-        width={cardWidth}
-        fontSize={16}
+        width={availableNameWidth}
+        height={nameHeight}
+        fontSize={nameFontSize}
         fontStyle="600"
         fill={UI_COLORS.white}
         align="center"
+        verticalAlign="top"
+        wrap="word"
+        lineHeight={1.3}
       />
 
       {/* Address with icon */}
@@ -266,7 +289,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         x={0}
         y={generationY}
         width={cardWidth}
-        fontSize={11}
+        fontSize={10}
         fill={UI_COLORS.white}
         opacity={0.7}
         align="center"
