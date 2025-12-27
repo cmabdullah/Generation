@@ -4,11 +4,14 @@
 
 export const NODE_DIMENSIONS = {
   width: 200,
-  height: 120,
-  cornerRadius: 8,
-  padding: 10,
+  height: 135,          // Updated from 120 to 135 (+15px for new design)
+  cornerRadius: 10,     // Updated from 8 to 10 (smoother corners)
+  padding: 0,           // No padding needed (centered layout)
+  avatarSize: 64,       // Updated from 40 to 64 (larger avatar)
+  avatarOverlap: 20,    // NEW: Avatar extends above card edge
+  avatarBorderWidth: 3, // NEW: Avatar border width
+  // Legacy (keeping for backward compatibility if needed)
   signatureBadgeRadius: 18,
-  avatarSize: 40,
 };
 
 export const LAYOUT_CONSTANTS = {

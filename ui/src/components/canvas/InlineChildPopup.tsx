@@ -98,13 +98,13 @@ const SingleChildQuickForm: React.FC = () => {
 
   if (!selectedParent) return null;
 
-  // Calculate popup position in screen coordinates
+  // Calculate popup position in screen coordinates (updated for new node height: 135px)
   const popupX = selectedParent.position.x * zoom + panX - 100;
-  const popupY = selectedParent.position.y * zoom + panY + 130;
+  const popupY = selectedParent.position.y * zoom + panY + 145; // Updated from 130 to 145 (135 + 10px gap)
 
-  // Calculate connection line coordinates
-  const nodeBottomX = selectedParent.position.x * zoom + panX + 60; // Center of node (120px wide / 2)
-  const nodeBottomY = selectedParent.position.y * zoom + panY + 100; // Bottom of node
+  // Calculate connection line coordinates (updated for new node dimensions)
+  const nodeBottomX = selectedParent.position.x * zoom + panX + 100; // Center of node (200px wide / 2)
+  const nodeBottomY = selectedParent.position.y * zoom + panY + 135; // Bottom of node (new height)
   const popupTopX = popupX + 140; // Center of popup (280px wide / 2)
   const popupTopY = popupY;
 
