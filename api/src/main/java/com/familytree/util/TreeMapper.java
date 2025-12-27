@@ -2,6 +2,7 @@ package com.familytree.util;
 
 import com.familytree.dto.PersonDetailsResponse;
 import com.familytree.dto.PersonResponse;
+import com.familytree.model.Gender;
 import com.familytree.model.Person;
 import com.familytree.model.PersonDetails;
 import lombok.experimental.UtilityClass;
@@ -80,6 +81,7 @@ public class TreeMapper {
 		Person person = new Person();
 		person.setId(node.getId());
 		person.setName(node.getName());
+		person.setGender(parseGender(node.getGender()));
 		person.setAvatar(node.getAvatar());
 		person.setAddress(node.getAddress());
 		person.setLevel(node.getLevel());
@@ -91,6 +93,21 @@ public class TreeMapper {
 		person.updateTimestamp();
 
 		return person;
+	}
+
+	/**
+	 * Parse gender string from JSON to Gender enum
+	 */
+	private static Gender parseGender(String genderStr) {
+		if (genderStr == null || genderStr.trim().isEmpty()) {
+			return null;
+		}
+		try {
+			return Gender.fromString(genderStr);
+		} catch (IllegalArgumentException e) {
+			// Log warning and return null for invalid gender values
+			return null;
+		}
 	}
 
 	/**
