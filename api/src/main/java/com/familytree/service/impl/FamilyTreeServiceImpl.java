@@ -13,11 +13,16 @@ import com.familytree.util.DataLoader;
 import com.familytree.util.TreeMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.familytree.config.CacheConfig.*;
 
 /**
  * Implementation of FamilyTreeService
@@ -33,8 +38,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = FAMILY_TREE_FULL, key = "'fullTree'")
 	public PersonResponse getFullTree() {
-		log.info("Fetching full family tree");
+		log.info("Fetching full family tree (cache miss)");
 
 		Person root = personRepository.findFirstByLevel(1)
 				.orElseThrow(() -> new PersonNotFoundException("Root person not found"));
@@ -48,8 +54,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = PERSON_BY_ID, key = "#id")
 	public PersonResponse getPersonById(String id) {
-		log.info("Fetching person by ID: {}", id);
+		log.info("Fetching person by ID: {} (cache miss)", id);
 
 		Person person = personRepository.findByIdWithChildren(id)
 				.orElseThrow(() -> new PersonNotFoundException(id));
@@ -59,8 +66,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = PERSON_DESCENDANTS, key = "#id")
 	public PersonResponse getPersonWithAllDescendants(String id) {
-		log.info("Fetching person with all descendants: {}", id);
+		log.info("Fetching person with all descendants: {} (cache miss)", id);
 
 		Person person = personRepository.findByIdWithAllDescendants(id)
 				.orElseThrow(() -> new PersonNotFoundException(id));
@@ -69,8 +77,14 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	}
 
 	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true),
+			@CacheEvict(value = SEARCH_RESULTS, allEntries = true),
+			@CacheEvict(value = PERSONS_BY_LEVEL, allEntries = true)
+	})
 	public PersonResponse createPerson(PersonRequest request) {
-		log.info("Creating new person with ID: {}", request.getId());
+		log.info("Creating new person with ID: {} (evicting caches)", request.getId());
 
 		// Validate that person doesn't already exist
 		if (personRepository.existsById(request.getId())) {
@@ -117,8 +131,15 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	}
 
 	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_BY_ID, key = "#id"),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true),
+			@CacheEvict(value = SEARCH_RESULTS, allEntries = true),
+			@CacheEvict(value = PERSONS_BY_LEVEL, allEntries = true)
+	})
 	public PersonResponse updatePerson(String id, PersonPatchRequest request) {
-		log.info("Updating person: {}", id);
+		log.info("Updating person: {} (evicting caches)", id);
 
 		// Find existing person
 		Person person = personRepository.findById(id)
@@ -181,8 +202,15 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	}
 
 	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_BY_ID, key = "#id"),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true),
+			@CacheEvict(value = SEARCH_RESULTS, allEntries = true),
+			@CacheEvict(value = PERSONS_BY_LEVEL, allEntries = true)
+	})
 	public void deletePerson(String id) {
-		log.info("Deleting person: {}", id);
+		log.info("Deleting person: {} (evicting caches)", id);
 
 		if (!personRepository.existsById(id)) {
 			throw new PersonNotFoundException(id);
@@ -194,8 +222,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = SEARCH_RESULTS, key = "#name")
 	public List<PersonResponse> searchByName(String name) {
-		log.info("Searching persons by name: {}", name);
+		log.info("Searching persons by name: {} (cache miss)", name);
 
 		List<Person> persons = personRepository.searchByName(name);
 
@@ -206,8 +235,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	@Override
 	@Transactional(readOnly = true)
+	@Cacheable(value = PERSONS_BY_LEVEL, key = "#level")
 	public List<PersonResponse> getPersonsByLevel(Integer level) {
-		log.info("Fetching persons at level: {}", level);
+		log.info("Fetching persons at level: {} (cache miss)", level);
 
 		List<Person> persons = personRepository.findByLevel(level);
 
@@ -224,8 +254,15 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	}
 
 	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_BY_ID, allEntries = true),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true),
+			@CacheEvict(value = SEARCH_RESULTS, allEntries = true),
+			@CacheEvict(value = PERSONS_BY_LEVEL, allEntries = true)
+	})
 	public void reloadData() {
-		log.info("Reloading data from JSON file");
+		log.info("Reloading data from JSON file (clearing all caches)");
 
 		// Clear existing data
 		dataLoader.clearDatabase();
@@ -237,8 +274,9 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	}
 
 	@Override
+	@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true)
 	public void resetAllPositions() {
-		log.info("Resetting all node positions to null");
+		log.info("Resetting all node positions to null (evicting full tree cache)");
 
 		// Get all persons and reset their positions
 		List<Person> allPersons = personRepository.findAll();

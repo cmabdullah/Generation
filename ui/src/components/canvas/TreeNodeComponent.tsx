@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Group, Rect, Text, Circle } from 'react-konva';
 import type { TreeNode } from '../../models/TreeNode';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
@@ -15,15 +15,20 @@ interface TreeNodeComponentProps {
 /**
  * Individual tree node component rendered with Konva
  * Displays person information and handles interactions
+ * Memoized to prevent unnecessary re-renders when props haven't changed
  */
-export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRightClick }) => {
+const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRightClick }) => {
   const [isHovered, setIsHovered] = useState(false);
   const mode = useUIStore((state) => state.mode);
+  const isZooming = useUIStore((state) => state.isZooming);
   const selectedNodeId = useTreeStore((state) => state.selectedNodeId);
   const setSelectedNode = useTreeStore((state) => state.setSelectedNode);
+  const setSelectedParent = useUIStore((state) => state.setSelectedParent);
+  const selectedParentNode = useUIStore((state) => state.selectedParentNode);
   const { handleDragEnd } = useNodeDrag();
 
   const isSelected = selectedNodeId === node.id;
+  const isSelectedAsParent = selectedParentNode?.id === node.id;
   const isDraggable = mode === 'edit';
 
   const handleContextMenu = (e: any) => {
@@ -32,6 +37,26 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
       const stage = e.target.getStage();
       const pointerPos = stage.getPointerPosition();
       onRightClick(node, pointerPos.x, pointerPos.y);
+    }
+  };
+
+  const handleNodeClick = (e: any) => {
+    e.cancelBubble = true; // Prevent stage click
+
+    // Set as selected node for info panel (always)
+    setSelectedNode(node.id);
+
+    // Only set as selected parent for inline popup in EDIT mode
+    if (mode === 'edit') {
+      setSelectedParent({
+        id: node.id,
+        name: node.name,
+        level: node.level || 1,
+        position: {
+          x: node.x,
+          y: node.y,
+        },
+      });
     }
   };
 
@@ -51,10 +76,10 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
         e.cancelBubble = true;
         handleDragEnd(node.id, e);
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onClick={() => setSelectedNode(node.id)}
-      onTap={() => setSelectedNode(node.id)}
+      onMouseEnter={() => !isZooming && setIsHovered(true)}
+      onMouseLeave={() => !isZooming && setIsHovered(false)}
+      onClick={handleNodeClick}
+      onTap={handleNodeClick}
       onContextMenu={handleContextMenu}
     >
       {/* Node card background */}
@@ -63,11 +88,11 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
         height={NODE_DIMENSIONS.height}
         fill={getColorForLevel(node.level)}
         cornerRadius={NODE_DIMENSIONS.cornerRadius}
-        shadowBlur={isHovered || isSelected ? 10 : 0}
+        shadowBlur={isHovered || isSelected || isSelectedAsParent ? 10 : 0}
         shadowColor={UI_COLORS.shadow}
         shadowOpacity={0.3}
-        stroke={isSelected ? UI_COLORS.selected : UI_COLORS.white}
-        strokeWidth={isSelected ? 3 : 1}
+        stroke={isSelected || isSelectedAsParent ? UI_COLORS.selected : UI_COLORS.white}
+        strokeWidth={isSelected || isSelectedAsParent ? 3 : 1}
       />
 
       {/* Name text */}
@@ -117,3 +142,21 @@ export const TreeNodeComponent: React.FC<TreeNodeComponentProps> = ({ node, onRi
     </Group>
   );
 };
+
+/**
+ * Memoized TreeNodeComponent - only re-renders when node data actually changes
+ * Custom comparison checks critical node properties for optimal performance
+ */
+export const TreeNodeComponent = memo(TreeNodeComponentBase, (prevProps, nextProps) => {
+  // Return true if props are equal (skip re-render)
+  // Return false if props changed (do re-render)
+  return (
+    prevProps.node.id === nextProps.node.id &&
+    prevProps.node.x === nextProps.node.x &&
+    prevProps.node.y === nextProps.node.y &&
+    prevProps.node.name === nextProps.node.name &&
+    prevProps.node.address === nextProps.node.address &&
+    prevProps.node.signature === nextProps.node.signature &&
+    prevProps.node.level === nextProps.node.level
+  );
+});

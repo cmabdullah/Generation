@@ -17,7 +17,9 @@ export const LAYOUT_CONSTANTS = {
   minZoom: 0.1,
   maxZoom: 5.0,
   defaultZoom: 1.0,
-  zoomStep: 0.1,
+  zoomStep: 0.15,  // Increased from 0.1 to 0.15 (50% faster button zoom)
+  wheelZoomFactor: 1.08,  // Increased from 1.05 to 1.08 (60% faster wheel zoom)
+  zoomAnimationDuration: 200, // Animation duration in ms for smooth button zoom
 };
 
 export const CANVAS_CONSTANTS = {

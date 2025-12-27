@@ -1,6 +1,8 @@
 spring:
   application:
     name: family-tree-api
+  profiles:
+    active: prod
 
   neo4j:
     uri: bolt://localhost:7687
@@ -12,8 +14,19 @@ spring:
     neo4j:
       database: neo4j
 
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m
+    cache-names:
+      - familyTreeFull
+      - personById
+      - personDescendants
+      - searchResults
+      - personsByLevel
+
 server:
-  port: 8080
+  port: 8081
   servlet:
     context-path: /
   error:
@@ -33,10 +46,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,caches,metrics
   endpoint:
     health:
       show-details: always
+  metrics:
+    cache:
+      instrument-cache: true
 
 # Swagger/OpenAPI configuration
 springdoc:

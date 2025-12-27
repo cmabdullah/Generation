@@ -1,8 +1,12 @@
 /**
  * API endpoint constants
+ *
+ * Uses empty base URL to make relative requests.
+ * Apache proxies /api/* to http://localhost:8081/api/*
+ * This allows the frontend to work from any domain without CORS issues.
  */
 
-export const API_BASE_URL = 'http://localhost:8080';
+export const API_BASE_URL = '';
 
 export const API_ENDPOINTS = {
   FAMILY_TREE: '/api/family-tree',
