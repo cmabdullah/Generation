@@ -3,8 +3,11 @@ import { ToastContainer } from 'react-toastify';
 import { TreeNavbar } from './components/navbar/TreeNavbar';
 import { FamilyTreeCanvas } from './components/canvas/FamilyTreeCanvas';
 import { InfoPanel } from './components/sidebar/InfoPanel';
+import { MobileInfoPanel } from './components/sidebar/MobileInfoPanel';
 import { Footer } from './components/footer/Footer';
 import { useTreeStore } from './stores/treeStore';
+import { useResponsiveBreakpoint } from './hooks/useResponsiveBreakpoint';
+import { getResponsiveNavbarHeight } from './utils/responsiveUtils';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -16,11 +19,14 @@ function App() {
   const loadTree = useTreeStore((state) => state.loadTree);
   const isLoading = useTreeStore((state) => state.isLoading);
   const error = useTreeStore((state) => state.error);
+  const { breakpoint } = useResponsiveBreakpoint();
 
   // Load tree on mount
   useEffect(() => {
     loadTree();
   }, [loadTree]);
+
+  const navbarHeight = getResponsiveNavbarHeight(breakpoint);
 
   if (isLoading) {
     return (
@@ -51,10 +57,13 @@ function App() {
   return (
     <div className="App">
       <TreeNavbar />
-      <div style={{ marginTop: '60px', marginBottom: '40px' }}>
+      <div style={{ marginTop: `${navbarHeight}px`, marginBottom: '40px' }}>
         <FamilyTreeCanvas />
       </div>
+      {/* Desktop/Tablet Info Panel */}
       <InfoPanel />
+      {/* Mobile Info Panel (fullscreen modal) */}
+      <MobileInfoPanel />
       <Footer />
       <ToastContainer
         position="bottom-right"

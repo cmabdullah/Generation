@@ -52,3 +52,87 @@ body {
   width: 3rem;
   height: 3rem;
 }
+
+/* ===== RESPONSIVE STYLES ===== */
+
+/* Mobile Styles (< 768px) */
+@media (max-width: 767px) {
+  /* Hide desktop info panel on mobile */
+  .desktop-info-panel {
+    display: none !important;
+  }
+
+  /* Optimize touch targets - minimum 44x44px */
+  .btn-sm {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 14px;
+  }
+
+  /* Hide horizontal scrollbar */
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Ensure mobile bottom nav doesn't cover content */
+  .mobile-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Small Phones (< 375px) */
+@media (max-width: 374px) {
+  /* Even smaller buttons on very small screens */
+  .btn-sm {
+    min-height: 40px;
+    min-width: 40px;
+    font-size: 12px;
+  }
+}
+
+/* Tablet Styles (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Hide mobile components on tablet */
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Desktop Styles (>= 1024px) */
+@media (min-width: 1024px) {
+  /* Hide mobile components on desktop */
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+
+  /* Show desktop info panel */
+  .desktop-info-panel {
+    display: block !important;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets on touch devices */
+  button,
+  a,
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Remove hover effects on touch devices */
+  button:hover,
+  a:hover {
+    /* No hover effect on touch */
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Sharper text on retina displays */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
