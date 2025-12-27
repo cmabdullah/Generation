@@ -16,6 +16,7 @@ public class JsonTreeNode {
 	private String name;
 	private String avatar;
 	private String address;
+	private String gender;
 	private Integer level;
 	private String signature;
 	private String spouse;
