@@ -1,0 +1,108 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="femaleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#E74C3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C0392B;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="femaleFaceGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFE0B2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFCC80;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="hairGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#5D4037;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3E2723;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="128" cy="128" r="128" fill="url(#femaleGradient)"/>
+
+  <!-- Female Avatar -->
+  <g>
+    <!-- Neck -->
+    <rect x="110" y="150" width="36" height="28" fill="#FFCC80" rx="5"/>
+
+    <!-- Dress/Top (feminine V-neck) -->
+    <path d="M 75 180 L 110 155 L 110 220 L 75 220 Z" fill="#9B59B6"/>
+    <path d="M 181 180 L 146 155 L 146 220 L 181 220 Z" fill="#9B59B6"/>
+    <path d="M 110 155 L 128 175 L 146 155 L 146 220 L 110 220 Z" fill="#8E44AD"/>
+
+    <!-- Neckline detail -->
+    <path d="M 110 155 L 128 170 L 146 155" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Face -->
+    <circle cx="128" cy="105" r="42" fill="url(#femaleFaceGradient)"/>
+
+    <!-- Hair (long, wavy, feminine style) -->
+    <!-- Top/Crown -->
+    <ellipse cx="128" cy="75" rx="48" ry="35" fill="url(#hairGradient)"/>
+
+    <!-- Left side hair (wavy) -->
+    <path d="M 82 85 Q 70 95 68 110 Q 66 125 70 140 Q 72 150 78 155" fill="url(#hairGradient)"/>
+    <path d="M 85 90 Q 75 100 74 115 Q 73 128 76 140" fill="url(#hairGradient)"/>
+
+    <!-- Right side hair (wavy) -->
+    <path d="M 174 85 Q 186 95 188 110 Q 190 125 186 140 Q 184 150 178 155" fill="url(#hairGradient)"/>
+    <path d="M 171 90 Q 181 100 182 115 Q 183 128 180 140" fill="url(#hairGradient)"/>
+
+    <!-- Hair highlights (wavy texture) -->
+    <path d="M 100 70 Q 105 75 110 70" fill="none" stroke="#6D4C41" stroke-width="2" opacity="0.4"/>
+    <path d="M 128 65 Q 130 68 132 65" fill="none" stroke="#6D4C41" stroke-width="2" opacity="0.4"/>
+    <path d="M 156 70 Q 151 75 146 70" fill="none" stroke="#6D4C41" stroke-width="2" opacity="0.4"/>
+
+    <!-- Bangs/Fringe -->
+    <path d="M 95 85 Q 100 80 105 85 Q 110 80 115 85 Q 120 80 125 85 Q 130 80 135 85 Q 140 80 145 85 Q 150 80 155 85 Q 160 80 161 85"
+          fill="url(#hairGradient)"/>
+
+    <!-- Ears (smaller, more delicate) -->
+    <ellipse cx="86" cy="105" rx="6" ry="10" fill="#FFCC80"/>
+    <ellipse cx="170" cy="105" rx="6" ry="10" fill="#FFCC80"/>
+
+    <!-- Earrings -->
+    <circle cx="86" cy="115" r="4" fill="#FFD700" stroke="#FFA000" stroke-width="1"/>
+    <circle cx="170" cy="115" r="4" fill="#FFD700" stroke="#FFA000" stroke-width="1"/>
+
+    <!-- Eyes (larger, more expressive) -->
+    <ellipse cx="110" cy="100" rx="7" ry="9" fill="#FFFFFF"/>
+    <ellipse cx="146" cy="100" rx="7" ry="9" fill="#FFFFFF"/>
+    <circle cx="110" cy="102" r="5" fill="#6D4C41"/>
+    <circle cx="146" cy="102" r="5" fill="#6D4C41"/>
+    <circle cx="111" cy="100" r="2" fill="#FFFFFF"/>
+    <circle cx="147" cy="100" r="2" fill="#FFFFFF"/>
+
+    <!-- Eyelashes -->
+    <path d="M 104 95 L 102 92" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 108 94 L 108 90" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 112 95 L 114 92" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 142 95 L 140 92" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 146 94 L 146 90" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M 150 95 L 152 92" stroke="#2C3E50" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- Eyebrows (thin, arched, feminine) -->
+    <path d="M 100 90 Q 110 87 118 89" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/>
+    <path d="M 138 89 Q 146 87 156 90" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Nose (delicate) -->
+    <path d="M 128 103 L 128 118" fill="none" stroke="#FFCC80" stroke-width="1.5"/>
+    <path d="M 123 116 Q 125 119 128 118 Q 131 119 133 116" fill="none" stroke="#FFCC80" stroke-width="1.5"/>
+
+    <!-- Lips (fuller, feminine) -->
+    <path d="M 116 130 Q 122 134 128 133 Q 134 134 140 130" fill="#E57373" stroke="#C62828" stroke-width="1"/>
+    <path d="M 116 130 Q 122 127 128 128 Q 134 127 140 130" fill="#EF9A9A" stroke="#C62828" stroke-width="0.5"/>
+
+    <!-- Blush -->
+    <ellipse cx="100" cy="115" rx="8" ry="5" fill="#FF6B9D" opacity="0.3"/>
+    <ellipse cx="156" cy="115" rx="8" ry="5" fill="#FF6B9D" opacity="0.3"/>
+
+    <!-- Facial shadow (softer features) -->
+    <ellipse cx="128" cy="135" rx="32" ry="7" fill="#FFCC80" opacity="0.2"/>
+  </g>
+
+  <!-- Female Symbol (top right corner) -->
+  <g transform="translate(190, 40)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="0" y1="18" x2="0" y2="35" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="-10" y1="28" x2="10" y2="28" stroke="#FFFFFF" stroke-width="4"/>
+  </g>
+</svg>

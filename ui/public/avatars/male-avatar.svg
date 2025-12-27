@@ -1,0 +1,75 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Background -->
+  <defs>
+    <linearGradient id="maleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#3498DB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2980B9;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="faceGradient" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFE0B2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFCC80;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Circle -->
+  <circle cx="128" cy="128" r="128" fill="url(#maleGradient)"/>
+
+  <!-- Male Avatar -->
+  <g>
+    <!-- Neck -->
+    <rect x="108" y="150" width="40" height="30" fill="#FFCC80" rx="5"/>
+
+    <!-- Shirt/Collar -->
+    <path d="M 85 180 L 108 160 L 108 200 L 85 220 Z" fill="#2C3E50"/>
+    <path d="M 171 180 L 148 160 L 148 200 L 171 220 Z" fill="#2C3E50"/>
+    <rect x="105" y="175" width="46" height="50" fill="#34495E"/>
+
+    <!-- Collar detail -->
+    <path d="M 108 175 L 128 190 L 148 175" fill="none" stroke="#FFFFFF" stroke-width="2"/>
+
+    <!-- Face -->
+    <circle cx="128" cy="110" r="45" fill="url(#faceGradient)"/>
+
+    <!-- Hair (short, masculine style) -->
+    <path d="M 85 95 Q 85 60 128 55 Q 171 60 171 95 Q 175 110 170 115 L 86 115 Q 81 110 85 95 Z" fill="#2C3E50"/>
+
+    <!-- Hair texture lines -->
+    <path d="M 100 70 Q 100 65 105 60" fill="none" stroke="#1A1A1A" stroke-width="2" opacity="0.3"/>
+    <path d="M 128 60 Q 128 58 128 55" fill="none" stroke="#1A1A1A" stroke-width="2" opacity="0.3"/>
+    <path d="M 156 70 Q 156 65 151 60" fill="none" stroke="#1A1A1A" stroke-width="2" opacity="0.3"/>
+
+    <!-- Ears -->
+    <ellipse cx="85" cy="110" rx="8" ry="12" fill="#FFCC80"/>
+    <ellipse cx="171" cy="110" rx="8" ry="12" fill="#FFCC80"/>
+
+    <!-- Eyes -->
+    <ellipse cx="110" cy="105" rx="6" ry="8" fill="#FFFFFF"/>
+    <ellipse cx="146" cy="105" rx="6" ry="8" fill="#FFFFFF"/>
+    <circle cx="110" cy="107" r="4" fill="#2C3E50"/>
+    <circle cx="146" cy="107" r="4" fill="#2C3E50"/>
+    <circle cx="111" cy="105" r="1.5" fill="#FFFFFF"/>
+    <circle cx="147" cy="105" r="1.5" fill="#FFFFFF"/>
+
+    <!-- Eyebrows (thicker, masculine) -->
+    <path d="M 100 95 Q 110 92 118 94" fill="none" stroke="#2C3E50" stroke-width="3" stroke-linecap="round"/>
+    <path d="M 138 94 Q 146 92 156 95" fill="none" stroke="#2C3E50" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Nose -->
+    <path d="M 128 108 L 128 125" fill="none" stroke="#FFCC80" stroke-width="2"/>
+    <path d="M 122 123 Q 125 126 128 125 Q 131 126 134 123" fill="none" stroke="#FFCC80" stroke-width="2"/>
+
+    <!-- Mouth (subtle smile) -->
+    <path d="M 115 135 Q 128 140 141 135" fill="none" stroke="#D4A574" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Facial shadow (jaw definition) -->
+    <ellipse cx="128" cy="145" rx="35" ry="8" fill="#FFCC80" opacity="0.3"/>
+  </g>
+
+  <!-- Male Symbol (top right corner) -->
+  <g transform="translate(190, 40)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="13" y1="-13" x2="25" y2="-25" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="25" y1="-25" x2="25" y2="-15" stroke="#FFFFFF" stroke-width="4"/>
+    <line x1="25" y1="-25" x2="15" y2="-25" stroke="#FFFFFF" stroke-width="4"/>
+  </g>
+</svg>
