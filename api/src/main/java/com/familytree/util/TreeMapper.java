@@ -121,6 +121,10 @@ public class TreeMapper {
 			return null;
 		}
 
+		return getPersonDetailsResponse(details);
+	}
+
+	public static PersonDetailsResponse getPersonDetailsResponse(PersonDetails details) {
 		return PersonDetailsResponse.builder()
 				.id(details.getId())
 				.fullName(details.getFullName())

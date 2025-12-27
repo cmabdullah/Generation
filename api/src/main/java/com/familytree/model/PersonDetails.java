@@ -45,8 +45,6 @@ public class PersonDetails {
     @Property("title")
     private String title;
 
-    // === Life Events ===
-
     @Property("dateOfBirth")
     private LocalDate dateOfBirth;
 
