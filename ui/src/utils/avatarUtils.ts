@@ -5,14 +5,14 @@
 
 /**
  * Default placeholder avatars for male and female
- * Using data URIs with SVG for scalable, professional-looking placeholders
+ * Uses custom avatar images from public/avatars folder
  */
 
-// Male placeholder: Blue background with white silhouette
-const MALE_PLACEHOLDER = `data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='32' cy='32' r='32' fill='%233498DB'/%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='32' cy='24' r='8'/%3E%3Cpath d='M 20 48 Q 20 38 32 38 Q 44 38 44 48 Z'/%3E%3C/g%3E%3C/svg%3E`;
+// Male placeholder: Cartoon male avatar (Image #3 - circular male character)
+const MALE_PLACEHOLDER = '/avatars/male-avatar.png';
 
-// Female placeholder: Pink/Rose background with white silhouette
-const FEMALE_PLACEHOLDER = `data:image/svg+xml,%3Csvg width='64' height='64' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23E74C3C'/%3E%3Cg fill='%23FFFFFF'%3E%3Ccircle cx='32' cy='24' r='8'/%3E%3Cpath d='M 18 48 Q 18 38 32 38 Q 46 38 46 48 Z'/%3E%3C/g%3E%3C/svg%3E`;
+// Female placeholder: 3D female avatar (Image #2 - woman with glasses)
+const FEMALE_PLACEHOLDER = '/avatars/female-avatar.png';
 
 /**
  * Get the appropriate avatar URL for a person
