@@ -46,6 +46,9 @@ public class PersonResponse {
 	@Schema(description = "Spouse information", example = "Mrs Example")
 	private String spouse;
 
+	@Schema(description = "Gender of the person", example = "Male")
+	private String gender;
+
 	@Schema(description = "Contributor ID", example = "001")
 	private String contributorId;
 
@@ -61,6 +64,9 @@ public class PersonResponse {
 	@Schema(description = "List of children (recursive structure)")
 	@Builder.Default
 	private List<PersonResponse> childs = new ArrayList<>();
+
+	@Schema(description = "Extended person details (optional)")
+	private PersonDetailsResponse details;
 
 	/**
 	 * Constructor without children (for single person response)
