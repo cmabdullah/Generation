@@ -4,7 +4,7 @@
 
 export const NODE_DIMENSIONS = {
   width: 200,
-  height: 135,          // Updated from 120 to 135 (+15px for new design)
+  height: 145,          // Updated from 135 to 145 (+10px to prevent text overlap)
   cornerRadius: 10,     // Updated from 8 to 10 (smoother corners)
   padding: 0,           // No padding needed (centered layout)
   avatarSize: 64,       // Updated from 40 to 64 (larger avatar)
