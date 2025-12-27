@@ -12,6 +12,7 @@ import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useViewportPreservation } from '../../hooks/useViewportPreservation';
 import { useTouchGestures } from '../../hooks/useTouchGestures';
+import { useIsMobile } from '../../utils/responsive';
 import { NODE_DIMENSIONS, LAYOUT_CONSTANTS } from '../../constants/dimensions';
 import { throttleWheel } from '../../utils/smoothZoom';
 import type { Connection, TreeNode } from '../../models/TreeNode';
@@ -30,6 +31,9 @@ export const FamilyTreeCanvas: React.FC = () => {
     height: window.innerHeight,
   });
 
+  // Detect if on mobile device
+  const isMobile = useIsMobile();
+
   const allNodes = useTreeStore((state) => state.allNodes);
   const setSelectedNode = useTreeStore((state) => state.setSelectedNode);
   const setShowInfoPanel = useUIStore((state) => state.setShowInfoPanel);
@@ -42,6 +46,7 @@ export const FamilyTreeCanvas: React.FC = () => {
   const setIsZooming = useUIStore((state) => state.setIsZooming);
   const clearSelectedParent = useUIStore((state) => state.clearSelectedParent);
   const touchGesturesEnabled = useUIStore((state) => state.touchGesturesEnabled);
+  const isPanModeActive = useUIStore((state) => state.isPanModeActive);
 
   // Preserve viewport during tree operations to prevent unexpected jumps
   useViewportPreservation();
@@ -374,7 +379,7 @@ export const FamilyTreeCanvas: React.FC = () => {
     <div
       style={{ width: '100%', height: '100vh', overflow: 'hidden', position: 'relative' }}
       className="no-overscroll no-select"
-      {...(touchGesturesEnabled && {
+      {...(isMobile && touchGesturesEnabled && {
         onTouchStart: touchGestureHandlers.onTouchStart as any,
         onTouchMove: touchGestureHandlers.onTouchMove as any,
         onTouchEnd: touchGestureHandlers.onTouchEnd as any,
@@ -385,7 +390,7 @@ export const FamilyTreeCanvas: React.FC = () => {
         ref={stageRef}
         {...stageConfig}
         onWheel={handleWheel}
-        draggable={mode === 'view' && !touchGesturesEnabled}
+        draggable={mode === 'view' && (isPanModeActive || isMobile)}
         onDragEnd={handleDragEnd}
         onClick={handleStageClick}
         onTap={handleStageClick}
