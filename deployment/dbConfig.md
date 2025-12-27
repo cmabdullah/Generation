@@ -125,11 +125,20 @@ sudo systemctl stop neo4j
 # Remove existing auth
 sudo rm -rf /var/lib/neo4j/data/dbms/auth*
 
+# Remove ALL data (fresh start)
+sudo rm -rf /var/lib/neo4j/data/*
+
 # Set new password
 sudo neo4j-admin dbms set-initial-password 'YOUR_NEW_PASSWORD'
 
 # Start Neo4j
 sudo systemctl start neo4j
+
+# Wait for startup
+sleep 15
+
+# Test connection
+cypher-shell -u neo4j -p 'YOUR_NEW_PASSWORD'
 ```
 
 ---
