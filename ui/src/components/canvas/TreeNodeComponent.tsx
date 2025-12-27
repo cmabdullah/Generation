@@ -1,11 +1,14 @@
 import { useState, memo } from 'react';
-import { Group, Rect, Text, Circle } from 'react-konva';
+import { Group, Rect, Text, Circle, Image } from 'react-konva';
+import useImage from 'use-image';
 import type { TreeNode } from '../../models/TreeNode';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
 import { getColorForLevel, UI_COLORS } from '../../constants/colors';
 import { useUIStore } from '../../stores/uiStore';
 import { useTreeStore } from '../../stores/treeStore';
 import { useNodeDrag } from '../../hooks/useNodeDrag';
+import { getAvatarUrl } from '../../utils/avatarUtils';
+import { formatMobile, truncateText, formatGeneration } from '../../utils/formatUtils';
 
 interface TreeNodeComponentProps {
   node: TreeNode;
@@ -13,9 +16,53 @@ interface TreeNodeComponentProps {
 }
 
 /**
+ * Avatar Image Component
+ * Loads and renders avatar image with circular clipping
+ */
+const AvatarImage: React.FC<{ avatarUrl: string; x: number; y: number; radius: number }> = ({
+  avatarUrl,
+  x,
+  y,
+  radius,
+}) => {
+  const [image] = useImage(avatarUrl, 'anonymous');
+
+  if (!image) {
+    // Return placeholder circle while loading
+    return (
+      <Circle
+        x={x}
+        y={y}
+        radius={radius}
+        fill="#E0E0E0"
+        stroke="#FFFFFF"
+        strokeWidth={NODE_DIMENSIONS.avatarBorderWidth}
+      />
+    );
+  }
+
+  return (
+    <Image
+      image={image}
+      x={x - radius}
+      y={y - radius}
+      width={radius * 2}
+      height={radius * 2}
+      clipFunc={(ctx: CanvasRenderingContext2D) => {
+        ctx.arc(radius, radius, radius, 0, Math.PI * 2);
+        ctx.closePath();
+      }}
+    />
+  );
+};
+
+/**
  * Individual tree node component rendered with Konva
- * Displays person information and handles interactions
- * Memoized to prevent unnecessary re-renders when props haven't changed
+ * NEW DESIGN: Floating Avatar - Elegant
+ * - Avatar centered at top, overlapping card edge
+ * - Name, address, mobile centered vertically
+ * - Generation level at bottom (subtle)
+ * - No signature badge (cleaner design)
  */
 const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRightClick }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -60,11 +107,21 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
     }
   };
 
-  // Truncate long names
-  const truncateName = (name: string, maxLength: number = 20) => {
-    if (name.length <= maxLength) return name;
-    return name.substring(0, maxLength) + '...';
-  };
+  // Calculate positions based on design specs
+  const cardWidth = NODE_DIMENSIONS.width;
+  const cardHeight = NODE_DIMENSIONS.height;
+  const avatarRadius = NODE_DIMENSIONS.avatarSize / 2; // 32px
+  const avatarCenterX = cardWidth / 2; // 100px (center of 200px card)
+  const avatarCenterY = avatarRadius - NODE_DIMENSIONS.avatarOverlap; // 12px (32 - 20 = 12)
+
+  // Text Y positions (from design spec)
+  const nameY = 52;
+  const addressY = 75;
+  const mobileY = 93;
+  const generationY = 115;
+
+  // Get avatar URL with gender-based placeholder
+  const avatarUrl = getAvatarUrl(node.avatar, node.gender);
 
   return (
     <Group
@@ -72,7 +129,6 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
       y={node.y}
       draggable={isDraggable}
       onDragEnd={(e) => {
-        // CRITICAL: Stop event propagation to prevent Stage from receiving drag events
         e.cancelBubble = true;
         handleDragEnd(node.id, e);
       }}
@@ -82,61 +138,91 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
       onTap={handleNodeClick}
       onContextMenu={handleContextMenu}
     >
-      {/* Node card background */}
+      {/* Card background */}
       <Rect
-        width={NODE_DIMENSIONS.width}
-        height={NODE_DIMENSIONS.height}
+        width={cardWidth}
+        height={cardHeight}
         fill={getColorForLevel(node.level)}
         cornerRadius={NODE_DIMENSIONS.cornerRadius}
-        shadowBlur={isHovered || isSelected || isSelectedAsParent ? 10 : 0}
-        shadowColor={UI_COLORS.shadow}
-        shadowOpacity={0.3}
+        shadowBlur={isHovered || isSelected || isSelectedAsParent ? 15 : 0}
+        shadowOffsetY={isHovered || isSelected || isSelectedAsParent ? 6 : 0}
+        shadowColor="rgba(0,0,0,0.25)"
+        shadowOpacity={0.35}
         stroke={isSelected || isSelectedAsParent ? UI_COLORS.selected : UI_COLORS.white}
         strokeWidth={isSelected || isSelectedAsParent ? 3 : 1}
       />
 
-      {/* Name text */}
-      <Text
-        text={truncateName(node.name)}
-        x={NODE_DIMENSIONS.padding}
-        y={20}
-        width={NODE_DIMENSIONS.width - 2 * NODE_DIMENSIONS.padding}
-        fontSize={14}
-        fontStyle="bold"
-        fill={UI_COLORS.white}
-        align="center"
-        wrap="word"
+      {/* Avatar shadow (behind avatar) */}
+      <Circle
+        x={avatarCenterX}
+        y={avatarCenterY}
+        radius={avatarRadius}
+        fill="transparent"
+        shadowColor="rgba(0,0,0,0.25)"
+        shadowBlur={12}
+        shadowOffsetY={4}
       />
 
-      {/* Address/Location */}
+      {/* Avatar image (circular) */}
+      <AvatarImage
+        avatarUrl={avatarUrl}
+        x={avatarCenterX}
+        y={avatarCenterY}
+        radius={avatarRadius}
+      />
+
+      {/* Avatar border */}
+      <Circle
+        x={avatarCenterX}
+        y={avatarCenterY}
+        radius={avatarRadius}
+        stroke={isSelected || isSelectedAsParent ? UI_COLORS.selected : UI_COLORS.white}
+        strokeWidth={isSelected || isSelectedAsParent ? 4 : NODE_DIMENSIONS.avatarBorderWidth}
+      />
+
+      {/* Name text */}
       <Text
-        text={`📍 ${node.address || 'N/A'}`}
-        x={NODE_DIMENSIONS.padding}
-        y={55}
-        width={NODE_DIMENSIONS.width - 2 * NODE_DIMENSIONS.padding}
+        text={truncateText(node.name, 22)}
+        x={0}
+        y={nameY}
+        width={cardWidth}
+        fontSize={16}
+        fontStyle="600"
+        fill={UI_COLORS.white}
+        align="center"
+      />
+
+      {/* Address with icon */}
+      <Text
+        text={`📍 ${truncateText(node.address || 'N/A', 18)}`}
+        x={0}
+        y={addressY}
+        width={cardWidth}
         fontSize={12}
         fill={UI_COLORS.white}
         align="center"
       />
 
-      {/* Signature badge */}
-      <Circle
-        x={NODE_DIMENSIONS.width / 2}
-        y={NODE_DIMENSIONS.height - 26}
-        radius={NODE_DIMENSIONS.signatureBadgeRadius}
-        fill="#2c3e50"
-        stroke={UI_COLORS.white}
-        strokeWidth={2}
+      {/* Mobile number with icon */}
+      <Text
+        text={`📱 ${formatMobile(node.mobile)}`}
+        x={0}
+        y={mobileY}
+        width={cardWidth}
+        fontSize={12}
+        fill={UI_COLORS.white}
+        align="center"
       />
 
+      {/* Generation level (subtle) */}
       <Text
-        text={node.signature || '?'}
+        text={formatGeneration(node.level)}
         x={0}
-        y={NODE_DIMENSIONS.height - 31}
-        width={NODE_DIMENSIONS.width}
-        fontSize={16}
-        fontStyle="bold"
+        y={generationY}
+        width={cardWidth}
+        fontSize={11}
         fill={UI_COLORS.white}
+        opacity={0.7}
         align="center"
       />
     </Group>
@@ -156,7 +242,9 @@ export const TreeNodeComponent = memo(TreeNodeComponentBase, (prevProps, nextPro
     prevProps.node.y === nextProps.node.y &&
     prevProps.node.name === nextProps.node.name &&
     prevProps.node.address === nextProps.node.address &&
-    prevProps.node.signature === nextProps.node.signature &&
+    prevProps.node.mobile === nextProps.node.mobile &&
+    prevProps.node.gender === nextProps.node.gender &&
+    prevProps.node.avatar === nextProps.node.avatar &&
     prevProps.node.level === nextProps.node.level
   );
 });

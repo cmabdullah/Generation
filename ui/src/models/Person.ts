@@ -9,6 +9,8 @@ export interface Person {
   level: number;
   signature: string;
   spouse?: string;
+  gender?: 'Male' | 'Female';  // Gender from backend
+  mobile?: string;              // Mobile number (from PersonDetails.cell)
   positionX?: number;
   positionY?: number;
   childs: Person[];
@@ -25,6 +27,8 @@ export interface PersonRequest {
   level: number;
   signature: string;
   spouse?: string;
+  gender?: 'Male' | 'Female';
+  mobile?: string;
   positionX?: number;
   positionY?: number;
   parentId?: string;
@@ -40,6 +44,8 @@ export interface PersonPatchRequest {
   level?: number;
   signature?: string;
   spouse?: string;
+  gender?: 'Male' | 'Female';
+  mobile?: string;
   positionX?: number;
   positionY?: number;
 }

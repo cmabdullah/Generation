@@ -120,6 +120,7 @@ export const FamilyTreeCanvas: React.FC = () => {
   // Calculate connections between nodes
   // Optimized with Map for O(1) lookups instead of O(n) find()
   // Only calculates connections for visible nodes
+  // UPDATED: Connection lines now account for avatar overlap at top of child nodes
   const connections: Connection[] = useMemo(() => {
     // Build lookup map once: O(n) instead of O(n²)
     const nodeMap = new Map(allNodes.map((node) => [node.id, node]));
@@ -134,12 +135,15 @@ export const FamilyTreeCanvas: React.FC = () => {
           conns.push({
             id: `${node.id}-${child.id}`,
             from: {
+              // Connect from bottom-center of parent node
               x: node.x + NODE_DIMENSIONS.width / 2,
               y: node.y + NODE_DIMENSIONS.height,
             },
             to: {
+              // Connect to top-center of child node, minus avatar overlap
+              // This makes the line connect to the top of the card, not the overlapping avatar
               x: childNode.x + NODE_DIMENSIONS.width / 2,
-              y: childNode.y,
+              y: childNode.y - NODE_DIMENSIONS.avatarOverlap,
             },
           });
         }
