@@ -14,3 +14,6 @@ logging:
 app:
   data:
     initial-load: ${INITIAL_DATA_LOAD:false}
+
+  server:
+    url: http://200.69.21.86
