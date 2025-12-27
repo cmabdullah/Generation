@@ -1,10 +1,13 @@
 package com.familytree.service;
 
+import com.familytree.dto.PersonDetailsRequest;
+import com.familytree.dto.PersonDetailsResponse;
 import com.familytree.dto.PersonPatchRequest;
 import com.familytree.dto.PersonRequest;
 import com.familytree.dto.PersonResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service interface for family tree operations
@@ -66,4 +69,28 @@ public interface FamilyTreeService {
 	 * This forces automatic layout recalculation on the frontend
 	 */
 	void resetAllPositions();
+
+	/**
+	 * Add or update person details
+	 *
+	 * @param personId the ID of the person
+	 * @param request the details to add or update
+	 * @return the created or updated details
+	 */
+	PersonDetailsResponse addOrUpdatePersonDetails(String personId, PersonDetailsRequest request);
+
+	/**
+	 * Get person details by person ID
+	 *
+	 * @param personId the ID of the person
+	 * @return Optional containing the details if found
+	 */
+	Optional<PersonDetailsResponse> getPersonDetails(String personId);
+
+	/**
+	 * Delete person details
+	 *
+	 * @param personId the ID of the person
+	 */
+	void deletePersonDetails(String personId);
 }
