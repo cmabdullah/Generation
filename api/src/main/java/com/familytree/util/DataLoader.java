@@ -83,7 +83,8 @@ public class DataLoader implements CommandLineRunner {
 		// Flatten tree to list of all nodes with parent references
 		Map<String, JsonTreeNode> allNodes = new HashMap<>();
 		Map<String, String> childToParentMap = new HashMap<>();
-		flattenTree(rootNode, null, allNodes, childToParentMap);
+		Map<String, Integer> nodeLevels = new HashMap<>();
+		flattenTree(rootNode, null, 1, allNodes, childToParentMap, nodeLevels);
 
 		log.info("Flattened tree contains {} nodes", allNodes.size());
 		log.info("Total parent-child relationships to create: {}", childToParentMap.size());
@@ -92,6 +93,8 @@ public class DataLoader implements CommandLineRunner {
 		List<Person> persons = new ArrayList<>();
 		for (JsonTreeNode node : allNodes.values()) {
 			Person person = TreeMapper.fromJsonNode(node);
+			// Set the computed level
+			person.setLevel(nodeLevels.get(node.getId()));
 			persons.add(person);
 		}
 
@@ -151,9 +154,10 @@ public class DataLoader implements CommandLineRunner {
 	/**
 	 * Flatten tree structure into a map of nodes and parent-child relationships
 	 */
-	private void flattenTree(JsonTreeNode node, String parentId,
+	private void flattenTree(JsonTreeNode node, String parentId, int level,
 	                         Map<String, JsonTreeNode> allNodes,
-	                         Map<String, String> childToParentMap) {
+	                         Map<String, String> childToParentMap,
+	                         Map<String, Integer> nodeLevels) {
 		if (node == null) {
 			return;
 		}
@@ -161,15 +165,18 @@ public class DataLoader implements CommandLineRunner {
 		// Add current node to map
 		allNodes.put(node.getId(), node);
 
+		// Store the computed level
+		nodeLevels.put(node.getId(), level);
+
 		// If this node has a parent, record the relationship
 		if (parentId != null) {
 			childToParentMap.put(node.getId(), parentId);
 		}
 
-		// Recursively process children
+		// Recursively process children with incremented level
 		if (node.getChilds() != null) {
 			for (JsonTreeNode child : node.getChilds()) {
-				flattenTree(child, node.getId(), allNodes, childToParentMap);
+				flattenTree(child, node.getId(), level + 1, allNodes, childToParentMap, nodeLevels);
 			}
 		}
 	}
