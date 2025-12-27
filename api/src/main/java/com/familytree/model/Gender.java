@@ -55,7 +55,7 @@ public enum Gender {
 
 		// Throw exception for invalid values
 		throw new IllegalArgumentException("Unknown gender: " + value +
-				". Valid values are: Male, Female, Other, Prefer not to say");
+				". Valid values are: Male, Female");
 	}
 
 	@Override
