@@ -1,12 +1,17 @@
 package com.familytree.service.impl;
 
+import com.familytree.dto.PersonDetailsRequest;
+import com.familytree.dto.PersonDetailsResponse;
 import com.familytree.dto.PersonPatchRequest;
 import com.familytree.dto.PersonRequest;
 import com.familytree.dto.PersonResponse;
 import com.familytree.exception.InvalidDataException;
 import com.familytree.exception.PersonAlreadyExistsException;
 import com.familytree.exception.PersonNotFoundException;
+import com.familytree.model.Gender;
 import com.familytree.model.Person;
+import com.familytree.model.PersonDetails;
+import com.familytree.repository.PersonDetailsRepository;
 import com.familytree.repository.PersonRepository;
 import com.familytree.service.FamilyTreeService;
 import com.familytree.util.DataLoader;
@@ -20,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.familytree.config.CacheConfig.*;
@@ -34,6 +41,7 @@ import static com.familytree.config.CacheConfig.*;
 public class FamilyTreeServiceImpl implements FamilyTreeService {
 
 	private final PersonRepository personRepository;
+	private final PersonDetailsRepository personDetailsRepository;
 	private final DataLoader dataLoader;
 
 	@Override
@@ -108,6 +116,11 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 				request.getSignature(),
 				request.getSpouse()
 		);
+
+		// Set gender if provided
+		if (request.getGender() != null && !request.getGender().isEmpty()) {
+			person.setGender(Gender.fromString(request.getGender()));
+		}
 
 		// Set position if provided
 		if (request.getPositionX() != null) {
@@ -289,5 +302,150 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 		personRepository.saveAll(allPersons);
 
 		log.info("Successfully reset positions for {} persons", allPersons.size());
+	}
+
+	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_BY_ID, key = "#personId"),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true)
+	})
+	public PersonDetailsResponse addOrUpdatePersonDetails(String personId, PersonDetailsRequest request) {
+		log.info("Adding or updating details for person: {} (evicting caches)", personId);
+
+		// Find the person
+		Person person = personRepository.findById(personId)
+				.orElseThrow(() -> new PersonNotFoundException("Person not found: " + personId));
+
+		PersonDetails details;
+
+		// Check if person already has details
+		if (person.hasDetails()) {
+			// Update existing details
+			details = person.getDetails();
+			updateDetailsFromRequest(details, request);
+			log.info("Updating existing details for person: {}", personId);
+		} else {
+			// Create new details
+			details = mapToDetailsEntity(request);
+			details.setId(UUID.randomUUID().toString());
+			details.setPerson(person);
+			person.setDetails(details);
+			log.info("Creating new details for person: {}", personId);
+		}
+
+		// Update timestamp
+		details.updateTimestamp();
+
+		// Save details
+		PersonDetails savedDetails = personDetailsRepository.save(details);
+
+		log.info("Person details saved for person: {}", personId);
+
+		return mapToDetailsResponse(savedDetails);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Optional<PersonDetailsResponse> getPersonDetails(String personId) {
+		log.info("Fetching details for person: {}", personId);
+
+		return personDetailsRepository.findByPersonId(personId)
+				.map(this::mapToDetailsResponse);
+	}
+
+	@Override
+	@Caching(evict = {
+			@CacheEvict(value = FAMILY_TREE_FULL, allEntries = true),
+			@CacheEvict(value = PERSON_BY_ID, key = "#personId"),
+			@CacheEvict(value = PERSON_DESCENDANTS, allEntries = true)
+	})
+	public void deletePersonDetails(String personId) {
+		log.info("Deleting details for person: {} (evicting caches)", personId);
+
+		// Verify person exists
+		if (!personRepository.existsById(personId)) {
+			throw new PersonNotFoundException("Person not found: " + personId);
+		}
+
+		// Delete details
+		personDetailsRepository.deleteByPersonId(personId);
+
+		log.info("Person details deleted for person: {}", personId);
+	}
+
+	// === Private Helper Methods for PersonDetails ===
+
+	/**
+	 * Map PersonDetailsRequest to PersonDetails entity
+	 */
+	private PersonDetails mapToDetailsEntity(PersonDetailsRequest request) {
+		PersonDetails details = new PersonDetails();
+		details.setFullName(request.getFullName());
+		details.setNickName(request.getNickName());
+		details.setTitle(request.getTitle());
+		details.setDateOfBirth(request.getDateOfBirth());
+		details.setDateOfDeath(request.getDateOfDeath());
+		details.setPlaceOfBirth(request.getPlaceOfBirth());
+		details.setPlaceOfDeath(request.getPlaceOfDeath());
+		details.setProfession(request.getProfession());
+		details.setInstitution(request.getInstitution());
+		details.setBio(request.getBio());
+		details.setCell(request.getCell());
+		details.setEmail(request.getEmail());
+		details.setFacebook(request.getFacebook());
+		details.setLinkedIn(request.getLinkedIn());
+		details.setWebsite(request.getWebsite());
+		details.setAnyOther(request.getAnyOther());
+		return details;
+	}
+
+	/**
+	 * Update PersonDetails entity from PersonDetailsRequest (only non-null fields)
+	 */
+	private void updateDetailsFromRequest(PersonDetails details, PersonDetailsRequest request) {
+		if (request.getFullName() != null) details.setFullName(request.getFullName());
+		if (request.getNickName() != null) details.setNickName(request.getNickName());
+		if (request.getTitle() != null) details.setTitle(request.getTitle());
+		if (request.getDateOfBirth() != null) details.setDateOfBirth(request.getDateOfBirth());
+		if (request.getDateOfDeath() != null) details.setDateOfDeath(request.getDateOfDeath());
+		if (request.getPlaceOfBirth() != null) details.setPlaceOfBirth(request.getPlaceOfBirth());
+		if (request.getPlaceOfDeath() != null) details.setPlaceOfDeath(request.getPlaceOfDeath());
+		if (request.getProfession() != null) details.setProfession(request.getProfession());
+		if (request.getInstitution() != null) details.setInstitution(request.getInstitution());
+		if (request.getBio() != null) details.setBio(request.getBio());
+		if (request.getCell() != null) details.setCell(request.getCell());
+		if (request.getEmail() != null) details.setEmail(request.getEmail());
+		if (request.getFacebook() != null) details.setFacebook(request.getFacebook());
+		if (request.getLinkedIn() != null) details.setLinkedIn(request.getLinkedIn());
+		if (request.getWebsite() != null) details.setWebsite(request.getWebsite());
+		if (request.getAnyOther() != null) details.setAnyOther(request.getAnyOther());
+	}
+
+	/**
+	 * Map PersonDetails entity to PersonDetailsResponse
+	 */
+	private PersonDetailsResponse mapToDetailsResponse(PersonDetails details) {
+		return PersonDetailsResponse.builder()
+				.id(details.getId())
+				.fullName(details.getFullName())
+				.nickName(details.getNickName())
+				.title(details.getTitle())
+				.dateOfBirth(details.getDateOfBirth())
+				.dateOfDeath(details.getDateOfDeath())
+				.placeOfBirth(details.getPlaceOfBirth())
+				.placeOfDeath(details.getPlaceOfDeath())
+				.profession(details.getProfession())
+				.institution(details.getInstitution())
+				.bio(details.getBio())
+				.cell(details.getCell())
+				.email(details.getEmail())
+				.facebook(details.getFacebook())
+				.linkedIn(details.getLinkedIn())
+				.website(details.getWebsite())
+				.anyOther(details.getAnyOther())
+				.createdAt(details.getCreatedAt())
+				.updatedAt(details.getUpdatedAt())
+				.build();
 	}
 }
