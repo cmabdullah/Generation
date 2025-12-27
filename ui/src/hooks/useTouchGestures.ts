@@ -18,8 +18,8 @@ export interface TouchGestureHandlers {
  * Supports: pinch-zoom, pan, long-press, double-tap, single-tap
  */
 export const useTouchGestures = (handlers: TouchGestureHandlers) => {
-  const touchesRef = useRef<Map<number, Touch>>(new Map());
-  const longPressTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const touchesRef = useRef<Map<number, React.Touch>>(new Map());
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTapTimeRef = useRef<number>(0);
   const initialDistanceRef = useRef<number>(0);
   const lastPanRef = useRef<Point>({ x: 0, y: 0 });
@@ -39,7 +39,7 @@ export const useTouchGestures = (handlers: TouchGestureHandlers) => {
   /**
    * Calculate distance between two touches
    */
-  const getDistance = useCallback((t1: Touch, t2: Touch): number => {
+  const getDistance = useCallback((t1: React.Touch, t2: React.Touch): number => {
     const dx = t2.clientX - t1.clientX;
     const dy = t2.clientY - t1.clientY;
     return Math.sqrt(dx * dx + dy * dy);
@@ -48,7 +48,7 @@ export const useTouchGestures = (handlers: TouchGestureHandlers) => {
   /**
    * Calculate center point between two touches
    */
-  const getCenter = useCallback((t1: Touch, t2: Touch): Point => {
+  const getCenter = useCallback((t1: React.Touch, t2: React.Touch): Point => {
     return {
       x: (t1.clientX + t2.clientX) / 2,
       y: (t1.clientY + t2.clientY) / 2,

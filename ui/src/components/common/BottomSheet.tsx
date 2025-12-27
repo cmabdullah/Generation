@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, ReactNode } from 'react';
+import React, { useRef, useState, useEffect, type ReactNode } from 'react';
 import '../../styles/bottom-sheet.css';
 
 export interface BottomSheetProps {

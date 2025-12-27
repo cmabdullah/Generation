@@ -107,7 +107,7 @@ export const FamilyTreeCanvas: React.FC = () => {
   // Touch gesture handlers
   const touchGestureHandlers = useTouchGestures({
     onPinchZoom: useCallback(
-      (scale, center) => {
+      (scale: number, center: { x: number; y: number }) => {
         if (!touchGesturesEnabled) return;
 
         // Update zoom based on pinch scale
@@ -136,7 +136,7 @@ export const FamilyTreeCanvas: React.FC = () => {
     ),
 
     onPan: useCallback(
-      (deltaX, deltaY) => {
+      (deltaX: number, deltaY: number) => {
         if (!touchGesturesEnabled || mode !== 'view') return;
 
         // Apply pan delta
@@ -146,7 +146,7 @@ export const FamilyTreeCanvas: React.FC = () => {
     ),
 
     onLongPress: useCallback(
-      (point) => {
+      (point: { x: number; y: number }) => {
         if (!touchGesturesEnabled) return;
 
         // Find node at long-press position
@@ -166,7 +166,7 @@ export const FamilyTreeCanvas: React.FC = () => {
     ),
 
     onDoubleTap: useCallback(
-      (point) => {
+      (point: { x: number; y: number }) => {
         if (!touchGesturesEnabled) return;
 
         // Zoom in on double-tap location
