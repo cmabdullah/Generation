@@ -40,6 +40,9 @@ public class PersonRequest {
 	@Schema(description = "Spouse information", example = "Mrs Fatima Begum")
 	private String spouse;
 
+	@Schema(description = "Gender of the person", example = "Male", allowableValues = {"Male", "Female", "Other", "Prefer not to say"})
+	private String gender;
+
 	@Schema(description = "Canvas X position", example = "500.0")
 	private Double positionX;
 
