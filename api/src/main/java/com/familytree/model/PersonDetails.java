@@ -1,5 +1,6 @@
 package com.familytree.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +28,12 @@ public class PersonDetails {
     @EqualsAndHashCode.Include
     private String id;
 
-    @Relationship(type = "HAS_DETAILS", direction = Relationship.Direction.OUTGOING)
+    /**
+     * Back-reference to the Person who owns these details.
+     * Uses JsonBackReference to prevent circular serialization.
+     */
+    @Relationship(type = "HAS_DETAILS", direction = Relationship.Direction.INCOMING)
+    @JsonBackReference("person-details")
     private Person person;
 
     @Property("fullName")
@@ -39,8 +45,7 @@ public class PersonDetails {
     @Property("title")
     private String title;
 
-    @Property("gender")
-    private String gender;
+    // === Life Events ===
 
     @Property("dateOfBirth")
     private LocalDate dateOfBirth;
