@@ -147,3 +147,58 @@ tasks.named('check') {
     description = 'Run checks on the UI module'
     dependsOn npmLint
 }
+
+// Task 8: UI Deployment Task
+tasks.register('deployUi', Exec) {
+    group = 'deployment'
+    description = 'Build and deploy UI to VM'
+
+    dependsOn npmBuild
+
+    doFirst {
+        println '========================================='
+        println 'Starting UI Deployment Process'
+        println '========================================='
+        println "Building UI from: ${srcDir}"
+        println "Distribution directory: ${distDir}"
+    }
+
+    commandLine 'bash', '-c', """
+        set -e
+
+        echo "Step 1/6: Verifying build was created..."
+        ls -la dist/
+
+        echo ""
+        echo "Step 2/6: Packaging UI build..."
+        tar -czf ui-dist.tar.gz -C dist .
+
+        echo ""
+        echo "Step 3/6: Copying to VM..."
+        scp ui-dist.tar.gz vm:/tmp/
+
+        echo ""
+        echo "Step 4/6: Deploying UI on VM..."
+        ssh vm "mkdir -p /tmp/ui-dist && \\
+                tar -xzf /tmp/ui-dist.tar.gz -C /tmp/ui-dist && \\
+                sudo bash /opt/family-tree/scripts/deploy-ui.sh /tmp/ui-dist && \\
+                rm -rf /tmp/ui-dist /tmp/ui-dist.tar.gz"
+
+        echo ""
+        echo "Step 5/6: Verifying UI files are deployed..."
+        ssh vm "ls -la /var/www/html/"
+
+        echo ""
+        echo "Step 6/6: Testing UI accessibility..."
+        ssh vm "curl -I http://localhost:80"
+
+        echo ""
+        echo "Cleaning up local package..."
+        rm -f ui-dist.tar.gz
+
+        echo ""
+        echo "========================================="
+        echo "UI Deployment Complete!"
+        echo "========================================="
+    """
+}
