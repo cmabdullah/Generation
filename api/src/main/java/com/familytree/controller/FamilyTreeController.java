@@ -1,6 +1,8 @@
 package com.familytree.controller;
 
 import com.familytree.dto.ApiResponse;
+import com.familytree.dto.PersonDetailsRequest;
+import com.familytree.dto.PersonDetailsResponse;
 import com.familytree.dto.PersonPatchRequest;
 import com.familytree.dto.PersonRequest;
 import com.familytree.dto.PersonResponse;
@@ -270,5 +272,82 @@ public class FamilyTreeController {
 		log.info("PATCH /api/family-tree/reset-positions - Reset all positions");
 		familyTreeService.resetAllPositions();
 		return ResponseEntity.ok(ApiResponse.success("All positions reset successfully", null));
+	}
+
+	// === Person Details Endpoints ===
+
+	@PostMapping("/{personId}/details")
+	@Operation(
+			summary = "Add or update person details",
+			description = "Creates or updates extended details for a person. If details exist, they will be updated; otherwise, new details will be created."
+	)
+	@ApiResponses(value = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "200",
+					description = "Person details created/updated successfully",
+					content = @Content(schema = @Schema(implementation = PersonDetailsResponse.class))
+			),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "404",
+					description = "Person not found"
+			)
+	})
+	public ResponseEntity<ApiResponse<PersonDetailsResponse>> addOrUpdatePersonDetails(
+			@Parameter(description = "Person ID", example = "gen5-001")
+			@PathVariable String personId,
+			@Valid @RequestBody PersonDetailsRequest request) {
+		log.info("POST /api/family-tree/{}/details - Add/update person details", personId);
+		PersonDetailsResponse details = familyTreeService.addOrUpdatePersonDetails(personId, request);
+		return ResponseEntity.ok(ApiResponse.success("Person details saved successfully", details));
+	}
+
+	@GetMapping("/{personId}/details")
+	@Operation(
+			summary = "Get person details",
+			description = "Retrieves extended details for a person"
+	)
+	@ApiResponses(value = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "200",
+					description = "Person details retrieved successfully",
+					content = @Content(schema = @Schema(implementation = PersonDetailsResponse.class))
+			),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "404",
+					description = "Person or details not found"
+			)
+	})
+	public ResponseEntity<ApiResponse<PersonDetailsResponse>> getPersonDetails(
+			@Parameter(description = "Person ID", example = "gen5-001")
+			@PathVariable String personId) {
+		log.info("GET /api/family-tree/{}/details - Get person details", personId);
+		return familyTreeService.getPersonDetails(personId)
+				.map(details -> ResponseEntity.ok(ApiResponse.success("Person details retrieved successfully", details)))
+				.orElse(ResponseEntity
+						.status(HttpStatus.NOT_FOUND)
+						.body(ApiResponse.error("Person details not found")));
+	}
+
+	@DeleteMapping("/{personId}/details")
+	@Operation(
+			summary = "Delete person details",
+			description = "Deletes extended details for a person"
+	)
+	@ApiResponses(value = {
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "200",
+					description = "Person details deleted successfully"
+			),
+			@io.swagger.v3.oas.annotations.responses.ApiResponse(
+					responseCode = "404",
+					description = "Person not found"
+			)
+	})
+	public ResponseEntity<ApiResponse<Void>> deletePersonDetails(
+			@Parameter(description = "Person ID", example = "gen5-001")
+			@PathVariable String personId) {
+		log.info("DELETE /api/family-tree/{}/details - Delete person details", personId);
+		familyTreeService.deletePersonDetails(personId);
+		return ResponseEntity.ok(ApiResponse.success("Person details deleted successfully", null));
 	}
 }
