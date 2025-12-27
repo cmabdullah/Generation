@@ -1,12 +1,16 @@
 import { Card, CardBody, CardTitle, Button, Badge } from 'reactstrap';
+import { MobileInfoPanel } from './MobileInfoPanel';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { findParent } from '../../utils/treeLayout';
+import { useIsMobile } from '../../utils/responsive';
 
 /**
  * Right sidebar info panel showing selected person details
+ * Shows MobileInfoPanel on mobile, desktop sidebar on desktop
  */
 export const InfoPanel: React.FC = () => {
+  const isMobile = useIsMobile();
   const selectedNodeId = useTreeStore((state) => state.selectedNodeId);
   const rootPerson = useTreeStore((state) => state.rootPerson);
   const allPersons = useTreeStore((state) => state.allPersons);
@@ -14,6 +18,12 @@ export const InfoPanel: React.FC = () => {
   const showInfoPanel = useUIStore((state) => state.showInfoPanel);
   const toggleInfoPanel = useUIStore((state) => state.toggleInfoPanel);
 
+  // Mobile: Use bottom sheet
+  if (isMobile) {
+    return <MobileInfoPanel />;
+  }
+
+  // Desktop: Use sidebar
   if (!showInfoPanel || !selectedNodeId) {
     return null;
   }

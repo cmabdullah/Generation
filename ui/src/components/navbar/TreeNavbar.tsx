@@ -1,14 +1,19 @@
 import { useMemo } from 'react';
 import { Navbar, Nav, Button, Input } from 'reactstrap';
 import { ZoomControls } from './ZoomControls';
+import { MobileNavbar } from './MobileNavbar';
+import { BottomNavbar } from './BottomNavbar';
 import { useUIStore } from '../../stores/uiStore';
 import { useTreeStore } from '../../stores/treeStore';
 import { usePositionCacheStore } from '../../stores/positionCacheStore';
+import { useIsMobile } from '../../utils/responsive';
 
 /**
  * Top navigation bar with controls and search
+ * Renders different UI for mobile vs desktop
  */
 export const TreeNavbar: React.FC = () => {
+  const isMobile = useIsMobile();
   const mode = useUIStore((state) => state.mode);
   const setMode = useUIStore((state) => state.setMode);
   const searchQuery = useUIStore((state) => state.searchQuery);
@@ -50,12 +55,23 @@ export const TreeNavbar: React.FC = () => {
     };
   }, [cacheVersion]);
 
+  // Mobile: Show mobile navbar + bottom navbar
+  if (isMobile) {
+    return (
+      <>
+        <MobileNavbar />
+        <BottomNavbar />
+      </>
+    );
+  }
+
+  // Desktop: Show full navbar
   return (
     <Navbar
       color="dark"
       dark
       expand="md"
-      className="px-3"
+      className="px-3 desktop-only"
       style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}
     >
       <div className="d-flex w-100 align-items-center justify-content-between">
