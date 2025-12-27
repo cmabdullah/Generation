@@ -1,5 +1,6 @@
 package com.familytree.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +31,11 @@ public class Person {
 
 	@Property("name")
 	private String name;
+
+	@Property("gender")
+	private Gender gender;
+
+	// === Visual Representation ===
 
 	@Property("avatar")
 	private String avatar;
@@ -62,7 +68,12 @@ public class Person {
 	private Double positionY;
 
 	@Relationship(type = "PARENT_OF", direction = Relationship.Direction.OUTGOING)
+	@JsonManagedReference("person-children")
 	private Set<Person> children = new HashSet<>();
+
+	@Relationship(type = "HAS_DETAILS", direction = Relationship.Direction.OUTGOING)
+	@JsonManagedReference("person-details")
+	private PersonDetails details;
 
 	@Property("createdAt")
 	private LocalDateTime createdAt;
@@ -95,6 +106,27 @@ public class Person {
 			this.children = new HashSet<>();
 		}
 		this.children.add(child);
+	}
+
+	/**
+	 * Set details for this person and maintain bidirectional relationship
+	 *
+	 * @param details the PersonDetails to associate with this person
+	 */
+	public void setDetails(PersonDetails details) {
+		this.details = details;
+		if (details != null && details.getPerson() != this) {
+			details.setPerson(this);
+		}
+	}
+
+	/**
+	 * Check if person has extended details
+	 *
+	 * @return true if details exist, false otherwise
+	 */
+	public boolean hasDetails() {
+		return this.details != null;
 	}
 
 	/**
