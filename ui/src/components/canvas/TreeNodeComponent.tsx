@@ -1,6 +1,5 @@
-import { useState, memo } from 'react';
+import { useState, memo, useEffect } from 'react';
 import { Group, Rect, Text, Circle, Image } from 'react-konva';
-import useImage from 'use-image';
 import type { TreeNode } from '../../models/TreeNode';
 import { NODE_DIMENSIONS } from '../../constants/dimensions';
 import { getColorForLevel, UI_COLORS } from '../../constants/colors';
@@ -15,9 +14,13 @@ interface TreeNodeComponentProps {
   onRightClick?: (node: TreeNode, x: number, y: number) => void;
 }
 
+// Cache for loaded images (prevents re-loading same image)
+const imageCache = new Map<string, HTMLImageElement>();
+
 /**
  * Avatar Image Component
  * Loads and renders avatar image with circular clipping
+ * Uses native Image() constructor instead of external library
  */
 const AvatarImage: React.FC<{ avatarUrl: string; x: number; y: number; radius: number }> = ({
   avatarUrl,
@@ -25,10 +28,44 @@ const AvatarImage: React.FC<{ avatarUrl: string; x: number; y: number; radius: n
   y,
   radius,
 }) => {
-  const [image] = useImage(avatarUrl, 'anonymous');
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (!image) {
-    // Return placeholder circle while loading
+  useEffect(() => {
+    // Check cache first
+    if (imageCache.has(avatarUrl)) {
+      setImage(imageCache.get(avatarUrl)!);
+      setIsLoading(false);
+      return;
+    }
+
+    // Load image using native Image constructor
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+
+    img.onload = () => {
+      // Cache the loaded image
+      imageCache.set(avatarUrl, img);
+      setImage(img);
+      setIsLoading(false);
+    };
+
+    img.onerror = () => {
+      console.warn(`Failed to load avatar: ${avatarUrl}`);
+      setIsLoading(false);
+    };
+
+    img.src = avatarUrl;
+
+    return () => {
+      // Cleanup: cancel loading if component unmounts
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [avatarUrl]);
+
+  if (isLoading || !image) {
+    // Show placeholder circle while loading
     return (
       <Circle
         x={x}
@@ -60,6 +97,7 @@ const AvatarImage: React.FC<{ avatarUrl: string; x: number; y: number; radius: n
  * Individual tree node component rendered with Konva
  * NEW DESIGN: Floating Avatar - Elegant
  * - Avatar centered at top, overlapping card edge
+ * - Separate dummy avatars for male/female (SVG data URIs)
  * - Name, address, mobile centered vertically
  * - Generation level at bottom (subtle)
  * - No signature badge (cleaner design)
@@ -120,7 +158,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
   const mobileY = 93;
   const generationY = 115;
 
-  // Get avatar URL with gender-based placeholder
+  // Get avatar URL with gender-based placeholder (uses SVG data URIs)
   const avatarUrl = getAvatarUrl(node.avatar, node.gender);
 
   return (
@@ -163,7 +201,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         shadowOffsetY={4}
       />
 
-      {/* Avatar image (circular) */}
+      {/* Avatar image (circular) - uses separate dummy avatars for male/female */}
       <AvatarImage
         avatarUrl={avatarUrl}
         x={avatarCenterX}
