@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 
     // Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -38,6 +39,9 @@ dependencies {
     // Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    // Caffeine Cache
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
     // Test Dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -53,4 +57,11 @@ tasks.named('test') {
 // Task to build JAR with specific name
 tasks.named('bootJar') {
     archiveFileName = 'family-tree-api.jar'
+}
+
+// Make bootRun task use environment variables
+tasks.named('bootRun') {
+    bootRun.systemProperty 'NEO4J_URI', System.getenv('NEO4J_URI') ?: 'bolt://neo4j:7687'
+    bootRun.systemProperty 'NEO4J_USERNAME', System.getenv('NEO4J_USERNAME') ?: 'neo4j'
+    bootRun.systemProperty 'NEO4J_PASSWORD', System.getenv('NEO4J_PASSWORD') ?: 'password'
 }

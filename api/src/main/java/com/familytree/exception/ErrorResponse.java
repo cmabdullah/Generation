@@ -28,6 +28,8 @@ public class ErrorResponse {
 
 	private String path;
 
+	private Long responseTime;
+
 	public static ErrorResponse of(int status, String error, String message, String path) {
 		return ErrorResponse.builder()
 				.timestamp(LocalDateTime.now())
@@ -35,6 +37,17 @@ public class ErrorResponse {
 				.error(error)
 				.message(message)
 				.path(path)
+				.build();
+	}
+
+	public static ErrorResponse of(int status, String error, String message, String path, Long responseTime) {
+		return ErrorResponse.builder()
+				.timestamp(LocalDateTime.now())
+				.status(status)
+				.error(error)
+				.message(message)
+				.path(path)
+				.responseTime(responseTime)
 				.build();
 	}
 }

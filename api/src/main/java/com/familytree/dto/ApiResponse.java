@@ -30,6 +30,9 @@ public class ApiResponse<T> {
 	@Schema(description = "Error details if any")
 	private String error;
 
+	@Schema(description = "API response time in milliseconds", example = "125")
+	private Long responseTime;
+
 	public static <T> ApiResponse<T> success(T data) {
 		return ApiResponse.<T>builder()
 				.success(true)

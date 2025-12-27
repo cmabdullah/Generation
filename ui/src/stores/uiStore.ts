@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { ViewMode } from '../models/TreeNode';
 import { LAYOUT_CONSTANTS, CANVAS_CONSTANTS } from '../constants/dimensions';
 import { saveViewport, saveViewportImmediate, loadViewport } from '../utils/viewportStorage';
+import { smoothZoom } from '../utils/smoothZoom';
 
 interface UIState {
   mode: ViewMode;
@@ -11,6 +12,16 @@ interface UIState {
   showInfoPanel: boolean;
   searchQuery: string;
   selectedLevel: number | null;
+  isZooming: boolean;
+
+  // Inline popup state for multi-child creation
+  selectedParentNode: {
+    id: string;
+    name: string;
+    level: number;
+    position: { x: number; y: number };
+  } | null;
+  childPopupMode: 'single' | 'multiple' | null;
 
   // Actions
   setMode: (mode: ViewMode) => void;
@@ -23,6 +34,10 @@ interface UIState {
   setShowInfoPanel: (show: boolean) => void;
   setSearchQuery: (query: string) => void;
   setSelectedLevel: (level: number | null) => void;
+  setIsZooming: (isZooming: boolean) => void;
+  setSelectedParent: (node: UIState['selectedParentNode']) => void;
+  setChildPopupMode: (mode: 'single' | 'multiple' | null) => void;
+  clearSelectedParent: () => void;
 }
 
 // Load persisted viewport state on initialization
@@ -36,8 +51,16 @@ export const useUIStore = create<UIState>((set, get) => ({
   showInfoPanel: false,
   searchQuery: '',
   selectedLevel: null,
+  isZooming: false,
+  selectedParentNode: null,
+  childPopupMode: null,
 
-  setMode: (mode) => set({ mode }),
+  setMode: (mode) => set({
+    mode,
+    // Clear selected parent when switching modes
+    selectedParentNode: null,
+    childPopupMode: null,
+  }),
 
   setZoom: (zoom) => {
     const clampedZoom = Math.max(
@@ -60,27 +83,49 @@ export const useUIStore = create<UIState>((set, get) => ({
   },
 
   zoomIn: () => {
-    const newZoom = Math.min(
-      get().zoom + LAYOUT_CONSTANTS.zoomStep,
+    const currentZoom = get().zoom;
+    const targetZoom = Math.min(
+      currentZoom + LAYOUT_CONSTANTS.zoomStep,
       LAYOUT_CONSTANTS.maxZoom
     );
-    set({ zoom: newZoom });
 
-    // Persist to localStorage
-    const { panX, panY } = get();
-    saveViewport(newZoom, panX, panY);
+    // Use smooth animation for better UX
+    smoothZoom({
+      from: currentZoom,
+      to: targetZoom,
+      duration: LAYOUT_CONSTANTS.zoomAnimationDuration,
+      onUpdate: (value) => {
+        set({ zoom: value });
+      },
+      onComplete: () => {
+        // Persist to localStorage only after animation completes
+        const { panX, panY } = get();
+        saveViewport(targetZoom, panX, panY);
+      },
+    });
   },
 
   zoomOut: () => {
-    const newZoom = Math.max(
-      get().zoom - LAYOUT_CONSTANTS.zoomStep,
+    const currentZoom = get().zoom;
+    const targetZoom = Math.max(
+      currentZoom - LAYOUT_CONSTANTS.zoomStep,
       LAYOUT_CONSTANTS.minZoom
     );
-    set({ zoom: newZoom });
 
-    // Persist to localStorage
-    const { panX, panY } = get();
-    saveViewport(newZoom, panX, panY);
+    // Use smooth animation for better UX
+    smoothZoom({
+      from: currentZoom,
+      to: targetZoom,
+      duration: LAYOUT_CONSTANTS.zoomAnimationDuration,
+      onUpdate: (value) => {
+        set({ zoom: value });
+      },
+      onComplete: () => {
+        // Persist to localStorage only after animation completes
+        const { panX, panY } = get();
+        saveViewport(targetZoom, panX, panY);
+      },
+    });
   },
 
   resetView: () => {
@@ -106,4 +151,18 @@ export const useUIStore = create<UIState>((set, get) => ({
   setSearchQuery: (query) => set({ searchQuery: query }),
 
   setSelectedLevel: (level) => set({ selectedLevel: level }),
+
+  setIsZooming: (isZooming) => set({ isZooming }),
+
+  setSelectedParent: (node) => set({
+    selectedParentNode: node,
+    childPopupMode: node ? 'single' : null,
+  }),
+
+  setChildPopupMode: (mode) => set({ childPopupMode: mode }),
+
+  clearSelectedParent: () => set({
+    selectedParentNode: null,
+    childPopupMode: null,
+  }),
 }));
