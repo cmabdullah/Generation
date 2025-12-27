@@ -12,8 +12,6 @@ export const BottomNavbar: React.FC = () => {
   const setMode = useUIStore((state) => state.setMode);
   const showInfoPanel = useUIStore((state) => state.showInfoPanel);
   const toggleInfoPanel = useUIStore((state) => state.toggleInfoPanel);
-  const isPanModeActive = useUIStore((state) => state.isPanModeActive);
-  const togglePanMode = useUIStore((state) => state.togglePanMode);
   const zoomIn = useUIStore((state) => state.zoomIn);
   const zoomOut = useUIStore((state) => state.zoomOut);
   const refreshTree = useTreeStore((state) => state.refreshTree);
@@ -32,16 +30,6 @@ export const BottomNavbar: React.FC = () => {
         aria-label={mode === 'view' ? 'Edit mode' : 'View mode'}
       >
         {mode === 'view' ? '✏️' : '👁️'}
-      </Button>
-
-      <Button
-        className="nav-item tap-target"
-        onClick={togglePanMode}
-        color={isPanModeActive ? 'primary' : 'secondary'}
-        title={isPanModeActive ? 'Pan mode active' : 'Enable pan mode'}
-        aria-label="Pan mode"
-      >
-        🤚
       </Button>
 
       <Button
