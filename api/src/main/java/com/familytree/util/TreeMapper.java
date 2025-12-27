@@ -1,7 +1,9 @@
 package com.familytree.util;
 
+import com.familytree.dto.PersonDetailsResponse;
 import com.familytree.dto.PersonResponse;
 import com.familytree.model.Person;
+import com.familytree.model.PersonDetails;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -22,9 +24,10 @@ public class TreeMapper {
 			return null;
 		}
 
-		return PersonResponse.builder()
+		PersonResponse response = PersonResponse.builder()
 				.id(person.getId())
 				.name(person.getName())
+				.gender(person.getGender() != null ? person.getGender().getDisplayName() : null)
 				.avatar(person.getAvatar())
 				.address(person.getAddress())
 				.level(person.getLevel())
@@ -37,6 +40,13 @@ public class TreeMapper {
 				.positionY(person.getPositionY())
 				.childs(new ArrayList<>())
 				.build();
+
+		// Include details if present
+		if (person.hasDetails()) {
+			response.setDetails(toDetailsResponse(person.getDetails()));
+		}
+
+		return response;
 	}
 
 	/**
@@ -101,5 +111,36 @@ public class TreeMapper {
 		}
 
 		return person;
+	}
+
+	/**
+	 * Convert PersonDetails entity to PersonDetailsResponse DTO
+	 */
+	public static PersonDetailsResponse toDetailsResponse(PersonDetails details) {
+		if (details == null) {
+			return null;
+		}
+
+		return PersonDetailsResponse.builder()
+				.id(details.getId())
+				.fullName(details.getFullName())
+				.nickName(details.getNickName())
+				.title(details.getTitle())
+				.dateOfBirth(details.getDateOfBirth())
+				.dateOfDeath(details.getDateOfDeath())
+				.placeOfBirth(details.getPlaceOfBirth())
+				.placeOfDeath(details.getPlaceOfDeath())
+				.profession(details.getProfession())
+				.institution(details.getInstitution())
+				.bio(details.getBio())
+				.cell(details.getCell())
+				.email(details.getEmail())
+				.facebook(details.getFacebook())
+				.linkedIn(details.getLinkedIn())
+				.website(details.getWebsite())
+				.anyOther(details.getAnyOther())
+				.createdAt(details.getCreatedAt())
+				.updatedAt(details.getUpdatedAt())
+				.build();
 	}
 }
