@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.familytree.config.CacheConfig.*;
+import static com.familytree.util.TreeMapper.getPersonDetailsResponse;
 
 /**
  * Implementation of FamilyTreeService
@@ -426,26 +427,6 @@ public class FamilyTreeServiceImpl implements FamilyTreeService {
 	 * Map PersonDetails entity to PersonDetailsResponse
 	 */
 	private PersonDetailsResponse mapToDetailsResponse(PersonDetails details) {
-		return PersonDetailsResponse.builder()
-				.id(details.getId())
-				.fullName(details.getFullName())
-				.nickName(details.getNickName())
-				.title(details.getTitle())
-				.dateOfBirth(details.getDateOfBirth())
-				.dateOfDeath(details.getDateOfDeath())
-				.placeOfBirth(details.getPlaceOfBirth())
-				.placeOfDeath(details.getPlaceOfDeath())
-				.profession(details.getProfession())
-				.institution(details.getInstitution())
-				.bio(details.getBio())
-				.cell(details.getCell())
-				.email(details.getEmail())
-				.facebook(details.getFacebook())
-				.linkedIn(details.getLinkedIn())
-				.website(details.getWebsite())
-				.anyOther(details.getAnyOther())
-				.createdAt(details.getCreatedAt())
-				.updatedAt(details.getUpdatedAt())
-				.build();
+		return getPersonDetailsResponse(details);
 	}
 }
