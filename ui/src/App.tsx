@@ -40,7 +40,7 @@ function App() {
           <p>{error}</p>
           <hr />
           <p className="mb-0">
-            Please make sure the backend is running at http://localhost:8080
+            Please make sure the backend is running at http://localhost:8081
           </p>
         </div>
       </div>
