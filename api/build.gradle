@@ -65,3 +65,44 @@ tasks.named('bootRun') {
     bootRun.systemProperty 'NEO4J_USERNAME', System.getenv('NEO4J_USERNAME') ?: 'neo4j'
     bootRun.systemProperty 'NEO4J_PASSWORD', System.getenv('NEO4J_PASSWORD') ?: 'password'
 }
+
+// API Deployment Task
+task deployApi(type: Exec) {
+    group = 'deployment'
+    description = 'Build and deploy API to VM'
+
+    dependsOn bootJar
+
+    doFirst {
+        println '========================================='
+        println 'Starting API Deployment Process'
+        println '========================================='
+        println "JAR file: build/libs/family-tree-api.jar"
+    }
+
+    commandLine 'bash', '-c', """
+        set -e
+
+        echo "Step 1/4: Verifying JAR was created..."
+        ls -lh build/libs/family-tree-api.jar
+
+        echo ""
+        echo "Step 2/4: Copying JAR to VM..."
+        scp build/libs/family-tree-api.jar vm:/tmp/
+
+        echo ""
+        echo "Step 3/4: Deploying API on VM..."
+        echo "NOTE: This will deploy the API. Make sure environment variables are configured in the service file."
+        ssh vm "sudo -u familytree bash /opt/family-tree/scripts/deploy-api.sh 1.0.0 /tmp/family-tree-api.jar"
+
+        echo ""
+        echo "Step 4/4: Verifying API is running..."
+        sleep 3
+        ssh vm "systemctl status family-tree-api --no-pager"
+
+        echo ""
+        echo "========================================="
+        echo "API Deployment Complete!"
+        echo "========================================="
+    """
+}
