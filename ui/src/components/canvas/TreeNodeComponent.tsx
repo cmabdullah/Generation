@@ -41,20 +41,28 @@ const AvatarImage: React.FC<{ avatarUrl: string; x: number; y: number; radius: n
 
     // Load image using native Image constructor
     const img = new window.Image();
-    img.crossOrigin = 'anonymous';
+
+    // Don't set crossOrigin for local files - this can cause CORS issues
+    // Only set for external URLs
+    if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
+      img.crossOrigin = 'anonymous';
+    }
 
     img.onload = () => {
       // Cache the loaded image
       imageCache.set(avatarUrl, img);
       setImage(img);
       setIsLoading(false);
+      console.log(`✅ Avatar loaded successfully: ${avatarUrl}`);
     };
 
-    img.onerror = () => {
-      console.warn(`Failed to load avatar: ${avatarUrl}`);
+    img.onerror = (error) => {
+      console.error(`❌ Failed to load avatar: ${avatarUrl}`, error);
+      // Still set loading to false to show placeholder
       setIsLoading(false);
     };
 
+    console.log(`🔄 Loading avatar: ${avatarUrl}`);
     img.src = avatarUrl;
 
     return () => {

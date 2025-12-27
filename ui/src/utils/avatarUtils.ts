@@ -5,14 +5,16 @@
 
 /**
  * Default placeholder avatars for male and female
- * Uses custom avatar images from public/avatars folder
+ * Uses SVG avatars (work immediately) or PNG if user provides custom images
  */
 
-// Male placeholder: Cartoon male avatar (Image #3 - circular male character)
-const MALE_PLACEHOLDER = '/avatars/male-avatar.png';
+// Male placeholder: Blue avatar with male silhouette (SVG - works immediately!)
+// Replace with male-avatar.png if you have a custom image
+const MALE_PLACEHOLDER = '/avatars/male-avatar.svg';
 
-// Female placeholder: 3D female avatar (Image #2 - woman with glasses)
-const FEMALE_PLACEHOLDER = '/avatars/female-avatar.png';
+// Female placeholder: Red avatar with female silhouette (SVG - works immediately!)
+// Replace with female-avatar.png if you have a custom image
+const FEMALE_PLACEHOLDER = '/avatars/female-avatar.svg';
 
 /**
  * Get the appropriate avatar URL for a person

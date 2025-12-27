@@ -2,7 +2,7 @@ spring:
   application:
     name: family-tree-api
   profiles:
-    active: prod
+    active: dev
 
   neo4j:
     uri: bolt://localhost:7687
