@@ -23,6 +23,12 @@ interface UIState {
   } | null;
   childPopupMode: 'single' | 'multiple' | null;
 
+  // Mobile-specific state
+  isMobileMenuOpen: boolean;
+  bottomSheetOpen: boolean;
+  mobileSearchExpanded: boolean;
+  touchGesturesEnabled: boolean;
+
   // Actions
   setMode: (mode: ViewMode) => void;
   setZoom: (zoom: number) => void;
@@ -38,6 +44,13 @@ interface UIState {
   setSelectedParent: (node: UIState['selectedParentNode']) => void;
   setChildPopupMode: (mode: 'single' | 'multiple' | null) => void;
   clearSelectedParent: () => void;
+
+  // Mobile actions
+  setMobileMenuOpen: (open: boolean) => void;
+  toggleMobileMenu: () => void;
+  setBottomSheetOpen: (open: boolean) => void;
+  toggleMobileSearch: () => void;
+  setTouchGesturesEnabled: (enabled: boolean) => void;
 }
 
 // Load persisted viewport state on initialization
@@ -54,6 +67,12 @@ export const useUIStore = create<UIState>((set, get) => ({
   isZooming: false,
   selectedParentNode: null,
   childPopupMode: null,
+
+  // Mobile state
+  isMobileMenuOpen: false,
+  bottomSheetOpen: false,
+  mobileSearchExpanded: false,
+  touchGesturesEnabled: true,
 
   setMode: (mode) => set({
     mode,
@@ -165,4 +184,15 @@ export const useUIStore = create<UIState>((set, get) => ({
     selectedParentNode: null,
     childPopupMode: null,
   }),
+
+  // Mobile actions
+  setMobileMenuOpen: (open) => set({ isMobileMenuOpen: open }),
+
+  toggleMobileMenu: () => set((state) => ({ isMobileMenuOpen: !state.isMobileMenuOpen })),
+
+  setBottomSheetOpen: (open) => set({ bottomSheetOpen: open }),
+
+  toggleMobileSearch: () => set((state) => ({ mobileSearchExpanded: !state.mobileSearchExpanded })),
+
+  setTouchGesturesEnabled: (enabled) => set({ touchGesturesEnabled: enabled }),
 }));

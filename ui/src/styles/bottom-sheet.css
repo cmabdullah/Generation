@@ -1,0 +1,153 @@
+/**
+ * Bottom Sheet Component Styles
+ * Mobile-first modal pattern
+ */
+
+.bottom-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.bottom-sheet.open {
+  pointer-events: auto;
+}
+
+/* Backdrop */
+.bottom-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+}
+
+.bottom-sheet.open .bottom-sheet-backdrop {
+  opacity: 1;
+}
+
+/* Sheet Content */
+.bottom-sheet-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+  will-change: transform;
+}
+
+.bottom-sheet.open .bottom-sheet-content {
+  transform: translateY(0);
+}
+
+/* Drag Handle Container */
+.bottom-sheet-handle-container {
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
+  cursor: grab;
+}
+
+.bottom-sheet-handle-container:active {
+  cursor: grabbing;
+}
+
+/* Drag Handle */
+.bottom-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.bottom-sheet-handle-container:hover .bottom-sheet-handle {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Header */
+.bottom-sheet-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+/* Body */
+.bottom-sheet-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  padding: 0;
+  overscroll-behavior: contain;
+}
+
+/* Prevent body scroll when sheet is open */
+body.bottom-sheet-open {
+  overflow: hidden;
+}
+
+/* Desktop: Hide bottom sheet (use regular modals) */
+@media (min-width: 768px) {
+  .bottom-sheet {
+    display: none;
+  }
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .bottom-sheet-content {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .bottom-sheet-header {
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .bottom-sheet-handle {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .bottom-sheet-handle-container:hover .bottom-sheet-handle {
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bottom-sheet-content {
+    transition: none;
+  }
+
+  .bottom-sheet-backdrop {
+    transition: none;
+  }
+}

@@ -1,0 +1,151 @@
+/**
+ * Responsive Breakpoint CSS Variables
+ * Defines CSS custom properties for responsive node dimensions
+ */
+
+/* ============================================
+   CSS VARIABLES - MOBILE SMALL (< 375px)
+   ============================================ */
+
+:root {
+  /* Default to desktop values */
+  --node-width: 200px;
+  --node-height: 145px;
+  --node-corner-radius: 10px;
+  --avatar-size: 64px;
+  --avatar-overlap: 20px;
+  --avatar-border-width: 3px;
+  --font-name: 17px;
+  --font-details: 14px;
+  --font-badge: 13px;
+  --horizontal-spacing: 250px;
+  --vertical-spacing: 200px;
+}
+
+@media (max-width: 374px) {
+  :root {
+    --node-width: 160px;
+    --node-height: 120px;
+    --node-corner-radius: 8px;
+    --avatar-size: 48px;
+    --avatar-overlap: 16px;
+    --avatar-border-width: 2px;
+    --font-name: 14px;
+    --font-details: 11px;
+    --font-badge: 10px;
+    --horizontal-spacing: 180px;
+    --vertical-spacing: 150px;
+  }
+}
+
+/* ============================================
+   CSS VARIABLES - MOBILE LARGE (375-767px)
+   ============================================ */
+
+@media (min-width: 375px) and (max-width: 767px) {
+  :root {
+    --node-width: 180px;
+    --node-height: 135px;
+    --node-corner-radius: 9px;
+    --avatar-size: 56px;
+    --avatar-overlap: 18px;
+    --avatar-border-width: 2.5px;
+    --font-name: 15px;
+    --font-details: 12px;
+    --font-badge: 11px;
+    --horizontal-spacing: 180px;
+    --vertical-spacing: 150px;
+  }
+}
+
+/* ============================================
+   CSS VARIABLES - TABLET (768-1023px)
+   ============================================ */
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --node-width: 190px;
+    --node-height: 140px;
+    --node-corner-radius: 10px;
+    --avatar-size: 60px;
+    --avatar-overlap: 19px;
+    --avatar-border-width: 3px;
+    --font-name: 16px;
+    --font-details: 13px;
+    --font-badge: 12px;
+    --horizontal-spacing: 220px;
+    --vertical-spacing: 180px;
+  }
+}
+
+/* ============================================
+   CSS VARIABLES - DESKTOP (1024px+)
+   ============================================ */
+
+@media (min-width: 1024px) {
+  :root {
+    --node-width: 200px;
+    --node-height: 145px;
+    --node-corner-radius: 10px;
+    --avatar-size: 64px;
+    --avatar-overlap: 20px;
+    --avatar-border-width: 3px;
+    --font-name: 17px;
+    --font-details: 14px;
+    --font-badge: 13px;
+    --horizontal-spacing: 250px;
+    --vertical-spacing: 200px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE CONTAINER CLASSES
+   ============================================ */
+
+.container-mobile {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container-mobile {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-mobile {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-mobile {
+    max-width: 1140px;
+  }
+}
+
+/* ============================================
+   RESPONSIVE GRID
+   ============================================ */
+
+.grid-mobile {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .grid-mobile {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-mobile {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

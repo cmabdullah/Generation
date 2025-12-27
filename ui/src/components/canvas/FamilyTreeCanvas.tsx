@@ -11,6 +11,7 @@ import { InlineChildPopup } from './InlineChildPopup';
 import { useTreeStore } from '../../stores/treeStore';
 import { useUIStore } from '../../stores/uiStore';
 import { useViewportPreservation } from '../../hooks/useViewportPreservation';
+import { useTouchGestures } from '../../hooks/useTouchGestures';
 import { NODE_DIMENSIONS, LAYOUT_CONSTANTS } from '../../constants/dimensions';
 import { throttleWheel } from '../../utils/smoothZoom';
 import type { Connection, TreeNode } from '../../models/TreeNode';
@@ -40,9 +41,13 @@ export const FamilyTreeCanvas: React.FC = () => {
   const mode = useUIStore((state) => state.mode);
   const setIsZooming = useUIStore((state) => state.setIsZooming);
   const clearSelectedParent = useUIStore((state) => state.clearSelectedParent);
+  const touchGesturesEnabled = useUIStore((state) => state.touchGesturesEnabled);
 
   // Preserve viewport during tree operations to prevent unexpected jumps
   useViewportPreservation();
+
+  // Store initial zoom for pinch gesture
+  const initialZoomRef = useRef<number>(zoom);
 
   // Handle window resize for responsive canvas
   useEffect(() => {
@@ -71,6 +76,119 @@ export const FamilyTreeCanvas: React.FC = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [parentIdForAdd, setParentIdForAdd] = useState<string | undefined>(undefined);
+
+  // Helper function to find node at screen position
+  const findNodeAtPoint = useCallback(
+    (x: number, y: number): TreeNode | null => {
+      // Convert screen coordinates to canvas coordinates
+      const canvasX = (x - panX) / zoom;
+      const canvasY = (y - panY) / zoom;
+
+      // Find node at this position
+      return (
+        allNodes.find((node) => {
+          return (
+            canvasX >= node.x &&
+            canvasX <= node.x + NODE_DIMENSIONS.width &&
+            canvasY >= node.y &&
+            canvasY <= node.y + NODE_DIMENSIONS.height
+          );
+        }) || null
+      );
+    },
+    [allNodes, panX, panY, zoom]
+  );
+
+  // Touch gesture handlers
+  const touchGestureHandlers = useTouchGestures({
+    onPinchZoom: useCallback(
+      (scale, center) => {
+        if (!touchGesturesEnabled) return;
+
+        // Update zoom based on pinch scale
+        const newZoom = Math.max(
+          LAYOUT_CONSTANTS.minZoom,
+          Math.min(LAYOUT_CONSTANTS.maxZoom, initialZoomRef.current * scale)
+        );
+
+        setZoom(newZoom);
+        setIsZooming(true);
+
+        // Adjust pan to zoom towards pinch center
+        const mousePointTo = {
+          x: (center.x - panX) / zoom,
+          y: (center.y - panY) / zoom,
+        };
+
+        const newPan = {
+          x: center.x - mousePointTo.x * newZoom,
+          y: center.y - mousePointTo.y * newZoom,
+        };
+
+        setPan(newPan.x, newPan.y);
+      },
+      [touchGesturesEnabled, panX, panY, zoom, setZoom, setPan, setIsZooming]
+    ),
+
+    onPan: useCallback(
+      (deltaX, deltaY) => {
+        if (!touchGesturesEnabled || mode !== 'view') return;
+
+        // Apply pan delta
+        setPan(panX + deltaX, panY + deltaY);
+      },
+      [touchGesturesEnabled, mode, panX, panY, setPan]
+    ),
+
+    onLongPress: useCallback(
+      (point) => {
+        if (!touchGesturesEnabled) return;
+
+        // Find node at long-press position
+        const node = findNodeAtPoint(point.x, point.y);
+
+        if (node) {
+          // Show context menu
+          setContextMenu({
+            visible: true,
+            x: point.x,
+            y: point.y,
+            node,
+          });
+        }
+      },
+      [touchGesturesEnabled, findNodeAtPoint]
+    ),
+
+    onDoubleTap: useCallback(
+      (point) => {
+        if (!touchGesturesEnabled) return;
+
+        // Zoom in on double-tap location
+        const newZoom = Math.min(zoom * 2, LAYOUT_CONSTANTS.maxZoom);
+        setZoom(newZoom);
+
+        // Center on tap point
+        const mousePointTo = {
+          x: (point.x - panX) / zoom,
+          y: (point.y - panY) / zoom,
+        };
+
+        const newPan = {
+          x: point.x - mousePointTo.x * newZoom,
+          y: point.y - mousePointTo.y * newZoom,
+        };
+
+        setPan(newPan.x, newPan.y);
+      },
+      [touchGesturesEnabled, zoom, panX, panY, setZoom, setPan]
+    ),
+  });
+
+  // Update initial zoom reference when pinch starts
+  useEffect(() => {
+    initialZoomRef.current = zoom;
+  }, [zoom]);
 
   // Memoize Stage configuration to prevent unnecessary re-renders
   // Only re-calculate when viewport state or window size changes
@@ -253,12 +371,21 @@ export const FamilyTreeCanvas: React.FC = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh', overflow: 'hidden', position: 'relative' }}>
+    <div
+      style={{ width: '100%', height: '100vh', overflow: 'hidden', position: 'relative' }}
+      className="no-overscroll no-select"
+      {...(touchGesturesEnabled && {
+        onTouchStart: touchGestureHandlers.onTouchStart as any,
+        onTouchMove: touchGestureHandlers.onTouchMove as any,
+        onTouchEnd: touchGestureHandlers.onTouchEnd as any,
+        onTouchCancel: touchGestureHandlers.onTouchCancel as any,
+      })}
+    >
       <Stage
         ref={stageRef}
         {...stageConfig}
         onWheel={handleWheel}
-        draggable={mode === 'view'}
+        draggable={mode === 'view' && !touchGesturesEnabled}
         onDragEnd={handleDragEnd}
         onClick={handleStageClick}
         onTap={handleStageClick}

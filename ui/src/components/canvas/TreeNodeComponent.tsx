@@ -1,11 +1,12 @@
-import { useState, memo, useEffect } from 'react';
+import { useState, memo, useEffect, useMemo } from 'react';
 import { Group, Rect, Text, Circle, Image } from 'react-konva';
 import type { TreeNode } from '../../models/TreeNode';
-import { NODE_DIMENSIONS } from '../../constants/dimensions';
+import { NODE_DIMENSIONS, getNodeDimensions } from '../../constants/dimensions';
 import { getColorForLevel, UI_COLORS } from '../../constants/colors';
 import { useUIStore } from '../../stores/uiStore';
 import { useTreeStore } from '../../stores/treeStore';
 import { useNodeDrag } from '../../hooks/useNodeDrag';
+import { useViewportSize } from '../../hooks/useViewportSize';
 import { getAvatarUrl } from '../../utils/avatarUtils';
 import { formatMobile, truncateText, formatGeneration, getAdaptiveMultilineTextSize } from '../../utils/formatUtils';
 
@@ -120,6 +121,10 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
   const selectedParentNode = useUIStore((state) => state.selectedParentNode);
   const { handleDragEnd } = useNodeDrag();
 
+  // Get responsive dimensions based on viewport
+  const viewport = useViewportSize();
+  const dimensions = useMemo(() => getNodeDimensions(viewport), [viewport.width, viewport.height]);
+
   const isSelected = selectedNodeId === node.id;
   const isSelectedAsParent = selectedParentNode?.id === node.id;
   const isDraggable = mode === 'edit';
@@ -153,12 +158,12 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
     }
   };
 
-  // Calculate positions based on design specs
-  const cardWidth = NODE_DIMENSIONS.width;
-  const cardHeight = NODE_DIMENSIONS.height;
-  const avatarRadius = NODE_DIMENSIONS.avatarSize / 2; // 32px
-  const avatarCenterX = cardWidth / 2; // 100px (center of 200px card)
-  const avatarCenterY = avatarRadius - NODE_DIMENSIONS.avatarOverlap; // 12px (32 - 20 = 12)
+  // Calculate positions based on responsive design specs
+  const cardWidth = dimensions.width;
+  const cardHeight = dimensions.height;
+  const avatarRadius = dimensions.avatarSize / 2;
+  const avatarCenterX = cardWidth / 2;
+  const avatarCenterY = avatarRadius - dimensions.avatarOverlap;
 
   // Get avatar URL with gender-based placeholder (uses SVG data URIs)
   const avatarUrl = getAvatarUrl(node.avatar, node.gender);
@@ -174,19 +179,19 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
     node.name,
     availableNameWidth,
     2, // Allow up to 2 lines
-    [12, 11, 10, 9], // Font size fallback levels (slightly smaller for 2-line support)
+    [dimensions.fontSize.name, dimensions.fontSize.name - 1, dimensions.fontSize.name - 2, dimensions.fontSize.name - 3],
     '600' // Font weight
   );
 
-  // Text Y positions (adjusted for potential 2-line names)
-  const nameY = 48;
+  // Text Y positions (adjusted for potential 2-line names and responsive sizing)
+  const nameY = avatarCenterY + avatarRadius + 8;
   const nameLineHeight = nameFontSize * 1.3; // 1.3 line height multiplier
   const nameHeight = needsWrapping ? nameLineHeight * 2 : nameLineHeight;
 
-  // Adjust positions based on whether name wraps
-  const addressY = nameY + nameHeight + 8; // 8px gap after name
-  const mobileY = addressY + 20;
-  const generationY = mobileY + 20;
+  // Adjust positions based on whether name wraps and responsive sizing
+  const addressY = nameY + nameHeight + 6;
+  const mobileY = addressY + (dimensions.fontSize.details * 1.5);
+  const generationY = cardHeight - dimensions.fontSize.details - 8;
 
   return (
     <Group
@@ -208,7 +213,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         width={cardWidth}
         height={cardHeight}
         fill={getColorForLevel(node.level)}
-        cornerRadius={NODE_DIMENSIONS.cornerRadius}
+        cornerRadius={dimensions.cornerRadius}
         shadowBlur={isHovered || isSelected || isSelectedAsParent ? 15 : 0}
         shadowOffsetY={isHovered || isSelected || isSelectedAsParent ? 6 : 0}
         shadowColor="rgba(0,0,0,0.25)"
@@ -242,7 +247,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         y={avatarCenterY}
         radius={avatarRadius}
         stroke={isSelected || isSelectedAsParent ? UI_COLORS.selected : UI_COLORS.white}
-        strokeWidth={isSelected || isSelectedAsParent ? 4 : NODE_DIMENSIONS.avatarBorderWidth}
+        strokeWidth={isSelected || isSelectedAsParent ? 4 : dimensions.avatarBorderWidth}
       />
 
       {/* Name text - adaptive sizing with multi-line support */}
@@ -267,7 +272,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         x={0}
         y={addressY}
         width={cardWidth}
-        fontSize={12}
+        fontSize={dimensions.fontSize.details}
         fill={UI_COLORS.white}
         align="center"
       />
@@ -278,7 +283,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         x={0}
         y={mobileY}
         width={cardWidth}
-        fontSize={12}
+        fontSize={dimensions.fontSize.details}
         fill={UI_COLORS.white}
         align="center"
       />
@@ -289,7 +294,7 @@ const TreeNodeComponentBase: React.FC<TreeNodeComponentProps> = ({ node, onRight
         x={0}
         y={generationY}
         width={cardWidth}
-        fontSize={10}
+        fontSize={dimensions.fontSize.details - 2}
         fill={UI_COLORS.white}
         opacity={0.7}
         align="center"
