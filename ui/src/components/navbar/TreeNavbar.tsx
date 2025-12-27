@@ -20,6 +20,8 @@ export const TreeNavbar: React.FC = () => {
   const setSearchQuery = useUIStore((state) => state.setSearchQuery);
   const toggleInfoPanel = useUIStore((state) => state.toggleInfoPanel);
   const showInfoPanel = useUIStore((state) => state.showInfoPanel);
+  const isPanModeActive = useUIStore((state) => state.isPanModeActive);
+  const togglePanMode = useUIStore((state) => state.togglePanMode);
   const refreshTree = useTreeStore((state) => state.refreshTree);
   const recalculateLayout = useTreeStore((state) => state.recalculateLayout);
   const cacheVersion = usePositionCacheStore((state) => state.version);
@@ -102,6 +104,16 @@ export const TreeNavbar: React.FC = () => {
             onClick={handleModeToggle}
           >
             {mode === 'view' ? '✏️ Edit Mode' : '👁️ View Mode'}
+          </Button>
+
+          <Button
+            color={isPanModeActive ? 'primary' : 'secondary'}
+            size="sm"
+            onClick={togglePanMode}
+            outline={!isPanModeActive}
+            title={isPanModeActive ? 'Pan mode active - click to disable' : 'Enable pan mode to move tree'}
+          >
+            🤚 {isPanModeActive ? 'Pan: ON' : 'Pan: OFF'}
           </Button>
 
           <Button

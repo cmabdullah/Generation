@@ -29,6 +29,9 @@ interface UIState {
   mobileSearchExpanded: boolean;
   touchGesturesEnabled: boolean;
 
+  // Pan mode state
+  isPanModeActive: boolean;
+
   // Actions
   setMode: (mode: ViewMode) => void;
   setZoom: (zoom: number) => void;
@@ -51,6 +54,10 @@ interface UIState {
   setBottomSheetOpen: (open: boolean) => void;
   toggleMobileSearch: () => void;
   setTouchGesturesEnabled: (enabled: boolean) => void;
+
+  // Pan mode actions
+  togglePanMode: () => void;
+  setPanModeActive: (active: boolean) => void;
 }
 
 // Load persisted viewport state on initialization
@@ -73,6 +80,9 @@ export const useUIStore = create<UIState>((set, get) => ({
   bottomSheetOpen: false,
   mobileSearchExpanded: false,
   touchGesturesEnabled: true,
+
+  // Pan mode state
+  isPanModeActive: false,
 
   setMode: (mode) => set({
     mode,
@@ -195,4 +205,9 @@ export const useUIStore = create<UIState>((set, get) => ({
   toggleMobileSearch: () => set((state) => ({ mobileSearchExpanded: !state.mobileSearchExpanded })),
 
   setTouchGesturesEnabled: (enabled) => set({ touchGesturesEnabled: enabled }),
+
+  // Pan mode actions
+  togglePanMode: () => set((state) => ({ isPanModeActive: !state.isPanModeActive })),
+
+  setPanModeActive: (active) => set({ isPanModeActive: active }),
 }));
